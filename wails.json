@@ -3,6 +3,7 @@
   "name": "myproject",
   "outputfilename": "myproject",
   "frontend:install": "npm install",
+  "frontend:dir": "go-website-downloader-frontend",
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
