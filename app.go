@@ -28,6 +28,11 @@ func (a *App) Greet(name string) string {
 }
 
 // Check URL
-func (a *App) CheckURLNow(url string) {
-	lib.CheckURL(url)
+func (a *App) CheckURLNow(url string) string {
+	r, err := lib.CheckURL(url)
+    if err != nil {
+        fmt.Println("Error:", err)
+        panic(err)
+    }
+	return r
 }
