@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func CheckURL(url string) (string, error) {
+func GetFavicon(url string) (string, error) {
 	Logger(url)
 	// Send an HTTP GET request to the example.com web page
     resp, err := http.Get(url)

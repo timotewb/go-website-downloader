@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gwd/lib"
+	"net/url"
 )
 
 // App struct
@@ -27,9 +28,19 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
+// Validate URL
+func (a *App) ValidateURL(s string) bool {
+	_, err := url.ParseRequestURI(s)
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+
 // Check URL
-func (a *App) CheckURLNow(url string) string {
-	r, err := lib.CheckURL(url)
+func (a *App) GetFavicon(url string) string {
+	r, err := lib.GetFavicon(url)
     if err != nil {
         fmt.Println("Error:", err)
         panic(err)
