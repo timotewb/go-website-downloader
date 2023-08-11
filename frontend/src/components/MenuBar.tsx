@@ -2,34 +2,44 @@ import "./MenuBar.css";
 import downloadSVG from "../assets/images/download.svg";
 import gallerySVG from "../assets/images/gallery.svg";
 import activitySVG from "../assets/images/activity.svg";
-import { useState } from "react";
+import asettingsSVG from "../assets/images/settings.svg";
+import { useState, useContext } from "react";
+import { PageContext, PageContextType } from "../App";
 
 function MenuBar() {
-  const [downloadState, setDownloadState] = useState(true);
-  const [galleryState, setGalleryState] = useState(false);
-  const [activityState, setActivityState] = useState(false);
+  const pageContext: PageContextType = useContext(PageContext);
 
   const downloadID = "downloadButton";
   const galleryID = "galleryButton";
   const activityID = "activityButton";
+  const settingsID = "settingsButton";
 
   const handleClick = (id: string) => {
     if (id === downloadID) {
-      setDownloadState(true);
-      setGalleryState(false);
-      setActivityState(false);
+      pageContext.download.setDownloadState(true);
+      pageContext.gallery.setGalleryState(false);
+      pageContext.activity.setActivityState(false);
+      pageContext.settings.setSettingsState(false);
     } else if (id === galleryID) {
-      setDownloadState(false);
-      setGalleryState(true);
-      setActivityState(false);
+      pageContext.download.setDownloadState(false);
+      pageContext.gallery.setGalleryState(true);
+      pageContext.activity.setActivityState(false);
+      pageContext.settings.setSettingsState(false);
     } else if (id === activityID) {
-      setDownloadState(false);
-      setGalleryState(false);
-      setActivityState(true);
+      pageContext.download.setDownloadState(false);
+      pageContext.gallery.setGalleryState(false);
+      pageContext.activity.setActivityState(true);
+      pageContext.settings.setSettingsState(false);
+    } else if (id === settingsID) {
+      pageContext.download.setDownloadState(false);
+      pageContext.gallery.setGalleryState(false);
+      pageContext.activity.setActivityState(false);
+      pageContext.settings.setSettingsState(true);
     } else {
-      setDownloadState(true);
-      setGalleryState(false);
-      setActivityState(false);
+      pageContext.download.setDownloadState(true);
+      pageContext.gallery.setGalleryState(false);
+      pageContext.activity.setActivityState(false);
+      pageContext.settings.setSettingsState(false);
     }
   };
 
@@ -37,24 +47,42 @@ function MenuBar() {
     <div id="menuBar">
       <div
         id="downloadButton"
-        className={downloadState ? "button button-active" : "button"}
+        className={
+          pageContext.download.downloadState ? "button button-active" : "button"
+        }
         onClick={() => handleClick("downloadButton")}
       >
         <img src={downloadSVG}></img> Download
       </div>
       <div
         id="galleryButton"
-        className={galleryState ? "button button-active" : "button"}
+        className={
+          pageContext.gallery.galleryState ? "button button-active" : "button"
+        }
         onClick={() => handleClick("galleryButton")}
       >
         <img src={gallerySVG}></img> Gallery
       </div>
       <div
         id="activityButton"
-        className={activityState ? "button button-active" : "button"}
+        className={
+          pageContext.activity.activityState ? "button button-active" : "button"
+        }
         onClick={() => handleClick("activityButton")}
       >
         <img src={activitySVG}></img> Activity
+      </div>
+      <div className="spacer"></div>
+      <div
+        id={settingsID}
+        className={
+          pageContext.settings.settingsyState
+            ? "button button-active"
+            : "button"
+        }
+        onClick={() => handleClick(settingsID)}
+      >
+        <img src={asettingsSVG}></img> Settings
       </div>
     </div>
   );
