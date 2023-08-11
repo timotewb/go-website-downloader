@@ -6,9 +6,6 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"github.com/wailsapp/wails/v2/pkg/options/linux"
-	"github.com/wailsapp/wails/v2/pkg/options/mac"
-	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed all:frontend/dist
@@ -20,7 +17,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "go-website-downloader",
+		Title: "Website Downloader",
 		Width:  660,
 		Height: 600,
         MinWidth: 660,
@@ -32,21 +29,6 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
-        Windows: &windows.Options{
-            WebviewIsTransparent: true,
-            WindowIsTranslucent: true,
-            BackdropType: windows.Acrylic,
-        },
-        Mac: &mac.Options{
-            WebviewIsTransparent: true,
-            WindowIsTranslucent:  true,
-        },
-        Linux: &linux.Options{
-            WindowIsTranslucent: true,
-        },
-        Debug: options.Debug{
-            OpenInspectorOnStartup: true,
-        },
 	})
 
 	if err != nil {
