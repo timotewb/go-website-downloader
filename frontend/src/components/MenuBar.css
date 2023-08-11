@@ -17,4 +17,9 @@
   align-self: stretch;
   border-radius: 5px;
   cursor: pointer;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.button-active {
+  background-color: rgb(238, 238, 238);
 }
