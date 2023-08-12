@@ -2,22 +2,27 @@ import "./Content.css";
 import { useContext } from "react";
 import { PageContext, PageContextType } from "../App";
 
+import Download from "./content/Download";
+import Gallery from "./content/Gallery";
+import Activity from "./content/Activity";
+import Settings from "./content/Settings";
+
 function Content() {
   const pageContext: PageContextType = useContext(PageContext);
 
-  let test: string;
+  let content: JSX.Element;
   if (pageContext.download.downloadState) {
-    test = "download";
+    content = <Download />;
   } else if (pageContext.gallery.galleryState) {
-    test = "gallery";
+    content = <Gallery />;
   } else if (pageContext.activity.activityState) {
-    test = "activity";
+    content = <Activity />;
   } else if (pageContext.settings.settingsyState) {
-    test = "settings";
+    content = <Settings />;
   } else {
-    test = "download";
+    content = <Download />;
   }
 
-  return <div id="content">hello - {test}</div>;
+  return <div id="content">{content}</div>;
 }
 export default Content;
