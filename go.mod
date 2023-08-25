@@ -1,4 +1,4 @@
-module changeme
+module gwd
 
 go 1.18
 

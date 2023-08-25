@@ -5,6 +5,7 @@
   gap: 0.625rem;
   flex-shrink: 0;
   align-self: stretch;
+  width: 100%;
 }
 
 #inputArea {
