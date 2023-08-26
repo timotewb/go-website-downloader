@@ -1,25 +1,28 @@
 import "./Download.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as App from "../../../wailsjs/go/main/App";
+import Searching from "./download/Searching";
 
 function Download() {
   const inputRef = useRef("");
-  const [urlValue, setURLVaue] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     inputRef.current = e.target.value;
   };
   const handleBlur = (e: React.FocusEvent<HTMLInputElement, Element>) => {
-    console.log("handleBlur");
     e.target.placeholder = "Enter URL";
   };
   const handleFocus = (e: React.FocusEvent<HTMLInputElement, Element>) => {
-    console.log("handleFocus");
     e.target.placeholder = "";
   };
   const handleClick = () => {
-    console.log(inputRef);
-    App.FindURL(inputRef.current);
+    setIsSearching(true);
+    App.FindURL(inputRef.current).then(() => {
+      setIsSearching(false);
+    });
   };
+
   return (
     <>
       <div id="input">
@@ -38,6 +41,7 @@ function Download() {
           Find
         </div>
       </div>
+      <div>{isSearching && <Searching />}</div>
     </>
   );
 }

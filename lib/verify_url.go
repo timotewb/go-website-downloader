@@ -2,26 +2,23 @@ package lib
 
 import (
 	"fmt"
-	"net"
 	"net/http"
+	"net/url"
 	"time"
 )
 
+func ValidateURL(urlString string) {
+	u, err := url.ParseRequestURI(urlString)
+	fmt.Println("Sleeping")
+	time.Sleep(5 * time.Second)
+	fmt.Println(u, err)
+}
+
 func VerifyURL(url string) (int, error) {
-	fmt.Println(url)
-	var client = http.Client{
-		Transport: &http.Transport{
-		  Dial: net.Dialer{Timeout: 2 * time.Second}.Dial,
-		},
-	  }
-    req, err := http.NewRequest("HEAD", url, nil)
-    if err != nil {
-       return 0, err
-    }
-    resp, err := client.Do(req)
-    if err != nil {
-       return 0, err
-    }
-    resp.Body.Close()
-    return resp.StatusCode, nil
+	response, err := http.Get(url)
+	if err != nil {
+	   return 0, err
+	}
+	defer response.Body.Close()
+	return response.StatusCode, nil
 }

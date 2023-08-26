@@ -1,0 +1,9 @@
+svg {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  display: inline-block;
+}
+circle {
+  fill: #7ec2f4;
+}
