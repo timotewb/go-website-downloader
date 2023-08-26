@@ -1,17 +1,32 @@
 package lib
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 )
 
-func ValidateURL(urlString string) {
-	u, err := url.ParseRequestURI(urlString)
-	fmt.Println("Sleeping")
-	time.Sleep(5 * time.Second)
-	fmt.Println(u, err)
+type ResponseType struct {
+	Code int `json:"code"`
+	Message string `json:"message"`
+}
+
+func ValidateURL(urlString string) ResponseType {
+	time.Sleep(1 * time.Second)
+	// create response object
+	var r ResponseType
+	// check url is valid
+	_, err := url.ParseRequestURI(urlString)
+	// error check
+	if err != nil {
+		r.Code = 1
+		r.Message = err.Error()
+		return r
+	}
+	// time.Sleep(1 * time.Second)
+	r.Code = 0
+	r.Message = ""
+	return r
 }
 
 func VerifyURL(url string) (int, error) {

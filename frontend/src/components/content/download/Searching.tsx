@@ -3,6 +3,7 @@ import "./Searching.css";
 function Searching() {
   return (
     <>
+      <div>Searching...</div>
       <svg viewBox="-25 -25 100 100">
         <circle stroke="none" cx="6" cy="25" r="6">
           <animateTransform
@@ -56,7 +57,6 @@ function Searching() {
           />
         </circle>
       </svg>
-      <div>Searching...</div>
     </>
   );
 }

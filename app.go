@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	lib "gwd/lib"
 )
@@ -24,14 +23,6 @@ func (a *App) startup(ctx context.Context) {
 }
 
 // Greet returns a greeting for the given name
-func (a *App) FindURL(url string) int {
-	lib.ValidateURL(url)
-	statusCode, err := lib.VerifyURL(url)
-	if err != nil {
-		fmt.Println(err)
-		return statusCode
-	} else{
-		fmt.Println(statusCode)
-	}
-	return statusCode
+func (a *App) FindURL(url string) lib.ResponseType {
+	return lib.ValidateURL(url)
 }
