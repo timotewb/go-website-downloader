@@ -46,4 +46,5 @@
   gap: 0.625rem;
   flex: 1 0 0;
   align-self: stretch;
+  width: 100%;
 }

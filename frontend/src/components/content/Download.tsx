@@ -7,7 +7,7 @@ import ErrorResponse from "./download/ErrorResponse";
 function Download() {
   const inputRef = useRef("");
   const [isSearching, setIsSearching] = useState(false);
-  const [isErrorResounce, setIsErrorResounce] = useState(false);
+  const [isErrorRespounce, setIsErrorRespounce] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [responseCode, setResponseCode] = useState(0);
 
@@ -21,7 +21,7 @@ function Download() {
     e.target.placeholder = "";
   };
   const handleClick = () => {
-    setIsErrorResounce(false);
+    setIsErrorRespounce(false);
     setIsSearching(true);
     App.FindURL(inputRef.current).then((data) => {
       console.log(data);
@@ -30,8 +30,8 @@ function Download() {
       setResponseMessage(data.message);
       console.log(responseCode, responseMessage);
       // check for error
-      if ((data.code = 1)) {
-        setIsErrorResounce(true);
+      if (data.code > 0) {
+        setIsErrorRespounce(true);
       }
       setIsSearching(false);
     });
@@ -57,7 +57,7 @@ function Download() {
       </div>
       <div id="nextAction">
         {isSearching && <Searching />}
-        {isErrorResounce && (
+        {isErrorRespounce && (
           <ErrorResponse message={responseMessage} code={responseCode} />
         )}
       </div>

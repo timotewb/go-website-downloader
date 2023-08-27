@@ -28,7 +28,7 @@ function ErrorResponse(props: lib.ResponseType) {
   };
 
   const ErrorMessage = () => {
-    return props.message;
+    return <div id="errorMessageBox">{props.message}</div>;
   };
 
   return (
@@ -39,12 +39,10 @@ function ErrorResponse(props: lib.ResponseType) {
         </div>
         <div className="message">{message}</div>
       </div>
-      <div className="viewErrorArea">
-        <div id="viewErrorMessageButton" onClick={() => handleClick()}>
-          View error message
-        </div>
-        <div id="errorMessageBox">{hideErrorMessage && <ErrorMessage />}</div>
+      <div id="viewErrorMessageButton" onClick={() => handleClick()}>
+        View error message
       </div>
+      {!hideErrorMessage && <ErrorMessage />}
     </>
   );
 }
