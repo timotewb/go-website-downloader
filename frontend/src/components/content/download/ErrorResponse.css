@@ -1,0 +1,20 @@
+#messageArea {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  align-self: stretch;
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  top: 2px;
+}
+
+.message {
+  margin-left: 25px;
+}
+
+.viewErrorMessageButton {
+  font-size: 10px;
+}

@@ -2,13 +2,14 @@ import "./Download.css";
 import { useEffect, useRef, useState } from "react";
 import * as App from "../../../wailsjs/go/main/App";
 import Searching from "./download/Searching";
-import InvalidURL from "./download/InvalidURL";
+import ErrorResponse from "./download/ErrorResponse";
 
 function Download() {
   const inputRef = useRef("");
   const [isSearching, setIsSearching] = useState(false);
-  const [isInvalidURL, setIsInvalidURL] = useState(false);
+  const [isErrorResounce, setIsErrorResounce] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  const [responseCode, setResponseCode] = useState(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     inputRef.current = e.target.value;
@@ -20,9 +21,18 @@ function Download() {
     e.target.placeholder = "";
   };
   const handleClick = () => {
+    setIsErrorResounce(false);
     setIsSearching(true);
     App.FindURL(inputRef.current).then((data) => {
+      console.log(data);
+      // set returned values
+      setResponseCode(data.code);
       setResponseMessage(data.message);
+      console.log(responseCode, responseMessage);
+      // check for error
+      if ((data.code = 1)) {
+        setIsErrorResounce(true);
+      }
       setIsSearching(false);
     });
   };
@@ -45,9 +55,11 @@ function Download() {
           Find
         </div>
       </div>
-      <div>
+      <div id="nextAction">
         {isSearching && <Searching />}
-        {isInvalidURL && <InvalidURL message={responseMessage} code={0} />}
+        {isErrorResounce && (
+          <ErrorResponse message={responseMessage} code={responseCode} />
+        )}
       </div>
     </>
   );
