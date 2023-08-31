@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as App from "../../../wailsjs/go/main/App";
 import Searching from "./download/Searching";
 import ErrorResponse from "./download/ErrorResponse";
+import Found from "./download/Found";
 
 function Download() {
   const inputRef = useRef("");
@@ -10,6 +11,7 @@ function Download() {
   const [isErrorRespounce, setIsErrorRespounce] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [responseCode, setResponseCode] = useState(0);
+  const [isFound, setIsFound] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     inputRef.current = e.target.value;
@@ -22,16 +24,17 @@ function Download() {
   };
   const handleClick = () => {
     setIsErrorRespounce(false);
+    setIsFound(false);
     setIsSearching(true);
     App.FindURL(inputRef.current).then((data) => {
-      console.log(data);
       // set returned values
       setResponseCode(data.code);
       setResponseMessage(data.message);
-      console.log(responseCode, responseMessage);
       // check for error
       if (data.code > 0) {
         setIsErrorRespounce(true);
+      } else if (data.code == 0) {
+        setIsFound(true);
       }
       setIsSearching(false);
     });
@@ -60,6 +63,7 @@ function Download() {
         {isErrorRespounce && (
           <ErrorResponse message={responseMessage} code={responseCode} />
         )}
+        {isFound && <Found />}
       </div>
     </>
   );

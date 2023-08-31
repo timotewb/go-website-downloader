@@ -1,9 +1,15 @@
 import "./Searching.css";
+import searchSVG from "../../../assets/images/search.svg";
 
 function Searching() {
   return (
     <>
-      <div>Searching...</div>
+      <div id="messageArea">
+        <div className="icon">
+          <img src={searchSVG}></img>
+        </div>
+        <div className="message">Searching...</div>
+      </div>
       <svg viewBox="-25 -25 100 100">
         <circle stroke="none" cx="6" cy="25" r="6">
           <animateTransform

@@ -41,7 +41,6 @@ function ErrorResponse(props: lib.ResponseType) {
         </div>
         <div id="errorMessageBox">{hideErrorMessage && props.message}</div>
       </div>
-      {!hideErrorMessage && <ErrorMessage />}
     </>
   );
 }
