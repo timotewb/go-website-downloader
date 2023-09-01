@@ -1,5 +1,5 @@
 import { lib } from "../../../../wailsjs/go/models";
-import "./ErrorResponse.css";
+import "./shared.css";
 import errorSVG from "../../../assets/images/error.svg";
 import { useState } from "react";
 

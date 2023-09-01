@@ -1,4 +1,4 @@
-import "./Found.css";
+import "./shared.css";
 
 function Found() {
   return <>Found</>;

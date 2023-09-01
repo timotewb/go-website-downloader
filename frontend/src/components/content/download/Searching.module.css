@@ -1,16 +1,12 @@
-svg {
+.circle {
+  fill: #7ec2f4;
+}
+
+.svg {
   width: 100px;
   height: 100px;
   margin-top: 0px;
   margin-left: auto;
   margin-right: auto;
   display: inline-block;
-}
-circle {
-  fill: #7ec2f4;
-}
-
-.icon {
-  position: absolute;
-  top: 2px;
 }
