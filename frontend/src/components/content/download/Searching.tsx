@@ -11,8 +11,8 @@ function Searching() {
         </div>
         <div className="message">Searching...</div>
       </div>
-      <svg className="{styles.svg}" viewBox="-25 -25 100 100">
-        <circle className="{styles.circle}" stroke="none" cx="6" cy="25" r="6">
+      <svg className={styles.svg} viewBox="-25 -25 100 100">
+        <circle className={styles.circle} stroke="none" cx="6" cy="25" r="6">
           <animateTransform
             attributeName="transform"
             dur="1.5s"
@@ -29,7 +29,7 @@ function Searching() {
             begin="0.1"
           />
         </circle>
-        <circle className="{styles.circle}" stroke="none" cx="30" cy="25" r="6">
+        <circle className={styles.circle} stroke="none" cx="30" cy="25" r="6">
           <animateTransform
             attributeName="transform"
             dur="1.5s"
@@ -46,7 +46,7 @@ function Searching() {
             begin="0.2"
           />
         </circle>
-        <circle className="{styles.circle}" stroke="none" cx="54" cy="25" r="6">
+        <circle className={styles.circle} stroke="none" cx="54" cy="25" r="6">
           <animateTransform
             attributeName="transform"
             dur="1.5s"

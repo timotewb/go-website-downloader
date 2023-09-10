@@ -1,39 +1,83 @@
 package lib
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
+
+	"golang.org/x/net/html"
 )
 
 type ResponseType struct {
 	Code int `json:"code"`
 	Message string `json:"message"`
+	Url string `json:"url"`
+	FaviconURL string `json:"favicon_url"`
 }
 
-func ValidateURL(urlString string) ResponseType {
+func ValidateURL(urlString string) (ResponseType, error) {
 	time.Sleep(1 * time.Second)
 	// create response object
 	var r ResponseType
 	// check url is valid
-	_, err := url.ParseRequestURI(urlString)
+	u, err := url.ParseRequestURI(urlString)
+	r.Url = u.String()
+	fmt.Println("--- Parse Done")
 	// error check
 	if err != nil {
 		r.Code = 1
 		r.Message = err.Error()
-		return r
+		return r, err
 	}
-	// time.Sleep(1 * time.Second)
+	fmt.Println("--- Error Check Done")
 	r.Code = 0
-	r.Message = ""
-	return r
+	r.Message = "Success"
+	fmt.Println("--- ready to return")
+	return r, err
 }
 
-func VerifyURL(url string) (int, error) {
-	response, err := http.Get(url)
+func VerifyURL(r ResponseType) (ResponseType, *http.Response, error) {
+	resp, err := http.Get(r.Url)
 	if err != nil {
-	   return 0, err
+		r.Code = 2
+		r.Message = err.Error()
+	   return r, resp, err
 	}
-	defer response.Body.Close()
-	return response.StatusCode, nil
+	defer resp.Body.Close()
+	return r, resp, nil
+}
+
+func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
+
+    doc, err := html.Parse(page.Body)
+    if err != nil {
+        fmt.Println("Error:", err)
+		r.Code = 3
+		r.Message = err.Error()
+        return r, err
+    }
+
+	// find favicon.ico
+	var favi func(*html.Node)
+	favi = func(n *html.Node) {
+		if n.Data == "link" {
+			for _, a := range n.Attr {
+				if strings.Contains(a.Val, "favicon.ico"){
+					if strings.HasPrefix(a.Val, "/") {
+						r.FaviconURL = strings.TrimSuffix(r.Url,"/") + a.Val
+					} else if strings.HasPrefix(a.Val, "http") {
+						r.FaviconURL = a.Val
+					}
+				}
+			}
+		}
+        // traverses the HTML of the webpage from the first child node
+        for c := n.FirstChild; c != nil; c = c.NextSibling {
+            favi(c)
+        }
+	}
+	favi(doc)
+	return r, err
 }

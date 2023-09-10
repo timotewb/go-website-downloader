@@ -11,6 +11,8 @@ function Download() {
   const [isErrorRespounce, setIsErrorRespounce] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [responseCode, setResponseCode] = useState(0);
+  const [responseURL, setresponseURL] = useState("");
+  const [responseFaviconURL, setresponseFaviconURL] = useState("");
   const [isFound, setIsFound] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +32,8 @@ function Download() {
       // set returned values
       setResponseCode(data.code);
       setResponseMessage(data.message);
+      setresponseURL(data.url);
+      setresponseFaviconURL(data.favicon_url);
       // check for error
       if (data.code > 0) {
         setIsErrorRespounce(true);
@@ -61,9 +65,21 @@ function Download() {
       <div id="nextAction">
         {isSearching && <Searching />}
         {isErrorRespounce && (
-          <ErrorResponse message={responseMessage} code={responseCode} />
+          <ErrorResponse
+            message={responseMessage}
+            code={responseCode}
+            url={responseURL}
+            favicon_url={responseFaviconURL}
+          />
         )}
-        {isFound && <Found />}
+        {isFound && (
+          <Found
+            message={responseMessage}
+            code={responseCode}
+            url={responseURL}
+            favicon_url={responseFaviconURL}
+          />
+        )}
       </div>
     </>
   );
