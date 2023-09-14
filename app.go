@@ -27,9 +27,8 @@ func (a *App) startup(ctx context.Context) {
 func (a *App) FindURL(url string) lib.ResponseType {
 
 	// Validate URL
-	fmt.Println("--- Validate Start")
+	fmt.Println("--- Validate")
 	resp, err := lib.ValidateURL(url)
-	fmt.Println("--- Validate End")
 	if err != nil {
 		return resp
 	}
@@ -47,7 +46,6 @@ func (a *App) FindURL(url string) lib.ResponseType {
 	if err != nil {
 		return resp
 	}
-
 	return resp
 
 }

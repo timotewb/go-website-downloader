@@ -45,7 +45,6 @@ func VerifyURL(r ResponseType) (ResponseType, *http.Response, error) {
 		r.Message = err.Error()
 	   return r, resp, err
 	}
-	defer resp.Body.Close()
 	return r, resp, nil
 }
 
@@ -58,23 +57,50 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
 		r.Message = err.Error()
         return r, err
     }
+	defer page.Body.Close()
+
+	// base url
+	u, err := url.Parse(r.Url)
+	if err != nil {
+        fmt.Println("Error:", err)
+		r.Code = 3
+		r.Message = err.Error()
+        return r, err
+	}
+	u.Path = ""
+	u.RawQuery = ""
+	u.Fragment = ""
 
 	// find favicon.ico
-	var favi func(*html.Node)
+ 	var favi func(*html.Node)
 	favi = func(n *html.Node) {
-		if n.Data == "link" {
+		l := []string{"link", "meta"}
+		if StringInSlice(n.Data, l...) {
 			for _, a := range n.Attr {
 				if strings.Contains(a.Val, "favicon.ico"){
 					if strings.HasPrefix(a.Val, "/") {
-						r.FaviconURL = strings.TrimSuffix(r.Url,"/") + a.Val
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
 					}
-				}
+				} else if strings.Contains(a.Val, "favicon.png"){
+					if strings.HasPrefix(a.Val, "/") {
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
+					} else if strings.HasPrefix(a.Val, "http") {
+						r.FaviconURL = a.Val
+					}
+				} else if strings.Contains(a.Val, "favicon-32x32.png"){
+					if strings.HasPrefix(a.Val, "/") {
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
+					} else if strings.HasPrefix(a.Val, "http") {
+						r.FaviconURL = a.Val
+					}
+				} // add regex search for favicon*.ico and favicon*.png
 			}
 		}
         // traverses the HTML of the webpage from the first child node
         for c := n.FirstChild; c != nil; c = c.NextSibling {
+			fmt.Println(c.Data)
             favi(c)
         }
 	}
