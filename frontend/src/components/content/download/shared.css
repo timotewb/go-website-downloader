@@ -36,3 +36,8 @@
   text-align: left;
   font-family: "Courier New", "Lucida Console", Monospace;
 }
+
+.favicon {
+  width: calc(100% - 20px);
+  align-items: center;
+}
