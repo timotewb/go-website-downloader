@@ -4,7 +4,7 @@ import errorSVG from "../../../assets/images/error.svg";
 import { useState } from "react";
 
 function ErrorResponse(props: lib.ResponseType) {
-  const [hideErrorMessage, setHideErrorMessage] = useState(true);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   // identify which error message to use
   let message: string;
   switch (props.code) {
@@ -20,10 +20,18 @@ function ErrorResponse(props: lib.ResponseType) {
   }
 
   const handleClick = () => {
-    if (hideErrorMessage) {
-      setHideErrorMessage(false);
+    if (showErrorMessage) {
+      setShowErrorMessage(false);
     } else {
-      setHideErrorMessage(true);
+      setShowErrorMessage(true);
+    }
+  };
+
+  const ErrorMessageBox = () => {
+    if (showErrorMessage) {
+      return <div id="errorMessageBox">{props.message}</div>;
+    } else {
+      return <></>;
     }
   };
 
@@ -35,11 +43,11 @@ function ErrorResponse(props: lib.ResponseType) {
         </div>
         <div className="message">{message}</div>
       </div>
-      <div className="viewErrorArea">
+      <div id="viewErrorArea">
         <div id="viewErrorMessageButton" onClick={() => handleClick()}>
           View error message
         </div>
-        <div id="errorMessageBox">{hideErrorMessage && props.message}</div>
+        <ErrorMessageBox />
       </div>
     </>
   );
