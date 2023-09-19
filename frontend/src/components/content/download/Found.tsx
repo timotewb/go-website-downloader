@@ -11,9 +11,11 @@ function Found(props: lib.ResponseType) {
         </div>
         <div className="message">Found!</div>
       </div>
-      <div className="favicon">
-        <img src={props.favicon_url}></img>
-        <p>{props.url}</p>
+      <div className="faviconDownloadArea">
+        <img id="faviconImg" src={props.favicon_url}></img>
+        <div id="downloadNowButton">
+          <div id="inputButton">Download</div>
+        </div>
       </div>
     </>
   );

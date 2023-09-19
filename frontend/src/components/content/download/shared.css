@@ -37,7 +37,19 @@
   font-family: "Courier New", "Lucida Console", Monospace;
 }
 
-.favicon {
+.faviconDownloadArea {
+  display: contents;
   width: calc(100% - 20px);
-  align-items: center;
+}
+
+#faviconImg {
+  height: 40px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#downloadNowButton {
+  width: 100px;
+  margin-left: auto;
+  margin-right: auto;
 }

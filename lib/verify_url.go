@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 
@@ -75,6 +76,7 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
  	var favi func(*html.Node)
 	favi = func(n *html.Node) {
 		l := []string{"link", "meta"}
+		rgx, _ := regexp.Compile(`favicon(.*).(ico|png)`)
 		if StringInSlice(n.Data, l...) {
 			for _, a := range n.Attr {
 				if strings.Contains(a.Val, "favicon.ico"){
@@ -89,21 +91,21 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
 					}
-				} else if strings.Contains(a.Val, "favicon-32x32.png"){
+				} else if rgx.MatchString(a.Val){
 					if strings.HasPrefix(a.Val, "/") {
 						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
 					}
-				} // add regex search for favicon*.ico and favicon*.png
+				}
 			}
 		}
         // traverses the HTML of the webpage from the first child node
         for c := n.FirstChild; c != nil; c = c.NextSibling {
-			fmt.Println(c.Data)
             favi(c)
         }
 	}
+	fmt.Println(doc)
 	favi(doc)
 	return r, err
 }
