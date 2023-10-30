@@ -76,26 +76,47 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
  	var favi func(*html.Node)
 	favi = func(n *html.Node) {
 		l := []string{"link", "meta"}
-		rgx, _ := regexp.Compile(`favicon(.*).(ico|png)`)
+		rgx, _ := regexp.Compile(`favicon[^/]+.(ico|png)`)
 		if StringInSlice(n.Data, l...) {
 			for _, a := range n.Attr {
+				fmt.Println(a.Val)
 				if strings.Contains(a.Val, "favicon.ico"){
-					if strings.HasPrefix(a.Val, "/") {
+					fmt.Println("01")
+					// this code is replicated - fix this
+					if strings.HasPrefix(a.Val, "//") {
 						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
+						return
+					} else if strings.HasPrefix(a.Val, "/") {
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
+						return
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
+						return
 					}
 				} else if strings.Contains(a.Val, "favicon.png"){
-					if strings.HasPrefix(a.Val, "/") {
+					fmt.Println("02")
+					if strings.HasPrefix(a.Val, "//") {
+						r.FaviconURL = u.String()[:strings.Index(u.String(), ":")+1] + a.Val
+						fmt.Println(r.FaviconURL)
+						return
+					} else if strings.HasPrefix(a.Val, "/") {
 						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
+						return
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
+						return
 					}
 				} else if rgx.MatchString(a.Val){
-					if strings.HasPrefix(a.Val, "/") {
+					fmt.Println("03")
+					if strings.HasPrefix(a.Val, "//") {
 						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
+						return
+					} else if strings.HasPrefix(a.Val, "/") {
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
+						return
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
+						return
 					}
 				}
 			}
@@ -105,7 +126,6 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
             favi(c)
         }
 	}
-	fmt.Println(doc)
 	favi(doc)
 	return r, err
 }
