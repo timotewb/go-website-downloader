@@ -79,11 +79,13 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
 		rgx, _ := regexp.Compile(`favicon[^/]+.(ico|png)`)
 		if StringInSlice(n.Data, l...) {
 			for _, a := range n.Attr {
-				fmt.Println(a.Val)
 				if strings.Contains(a.Val, "favicon.ico"){
 					fmt.Println("01")
 					// this code is replicated - fix this
-					if strings.HasPrefix(a.Val, "//") {
+					if a.Val == "favicon.ico" {
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + "/" + a.Val
+						return
+					} else if strings.HasPrefix(a.Val, "//") {
 						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
 						return
 					} else if strings.HasPrefix(a.Val, "/") {
@@ -92,12 +94,16 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
 						return
+					} else {
+						fmt.Println(" --- Build new rule for GetFavicon() 01.")
 					}
 				} else if strings.Contains(a.Val, "favicon.png"){
 					fmt.Println("02")
-					if strings.HasPrefix(a.Val, "//") {
-						r.FaviconURL = u.String()[:strings.Index(u.String(), ":")+1] + a.Val
-						fmt.Println(r.FaviconURL)
+					if a.Val == "favicon.png" {
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + "/" + a.Val
+						return
+					} else if strings.HasPrefix(a.Val, "//") {
+						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
 						return
 					} else if strings.HasPrefix(a.Val, "/") {
 						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
@@ -105,9 +111,12 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
 						return
+					} else {
+						fmt.Println(" --- Build new rule for GetFavicon() 02.")
 					}
 				} else if rgx.MatchString(a.Val){
 					fmt.Println("03")
+					// this code is slightly different - Yay!
 					if strings.HasPrefix(a.Val, "//") {
 						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
 						return
@@ -117,6 +126,8 @@ func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
 					} else if strings.HasPrefix(a.Val, "http") {
 						r.FaviconURL = a.Val
 						return
+					} else {
+						fmt.Println(" --- Build new rule for GetFavicon() 03.")
 					}
 				}
 			}
