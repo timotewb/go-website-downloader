@@ -1,8 +1,22 @@
 import { lib } from "../../../../wailsjs/go/models";
 import "./shared.css";
 import successSVG from "../../../assets/images/success.svg";
+import Cookies from 'universal-cookie';
+import { PageContext, PageContextType } from "../../../App";
+import { useContext } from "react";
 
 function Found(props: lib.ResponseType) {
+  const cookies = new Cookies();
+  const pageContext: PageContextType = useContext(PageContext);
+
+  const handleClick = () => {
+      pageContext.download.setDownloadState(false);
+      pageContext.gallery.setGalleryState(false);
+      pageContext.activity.setActivityState(true);
+      pageContext.settings.setSettingsState(false);
+      cookies.set('myCat1', 'Pacman', { path: '/' });
+  };
+
   return (
     <>
       <div id="messageArea">
@@ -13,7 +27,8 @@ function Found(props: lib.ResponseType) {
       </div>
       <div className="faviconDownloadArea">
         <img id="faviconImg" src={props.favicon_url}></img>
-        <div id="downloadNowButton">
+        <div id="downloadNowButton"
+          onClick={() => handleClick()}>
           <div id="inputButton">Download</div>
         </div>
       </div>
