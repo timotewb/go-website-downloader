@@ -3,3 +3,5 @@
 import {lib} from '../models';
 
 export function FindURL(arg1:string):Promise<lib.ResponseType>;
+
+export function GetSite(arg1:lib.ResponseType):Promise<void>;

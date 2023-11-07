@@ -5,3 +5,7 @@
 export function FindURL(arg1) {
   return window['go']['main']['App']['FindURL'](arg1);
 }
+
+export function GetSite(arg1) {
+  return window['go']['main']['App']['GetSite'](arg1);
+}

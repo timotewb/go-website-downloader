@@ -1,20 +1,20 @@
 import { lib } from "../../../../wailsjs/go/models";
 import "./shared.css";
 import successSVG from "../../../assets/images/success.svg";
-import Cookies from 'universal-cookie';
 import { PageContext, PageContextType } from "../../../App";
 import { useContext } from "react";
+import * as App from "../../../../wailsjs/go/main/App"
 
 function Found(props: lib.ResponseType) {
-  const cookies = new Cookies();
   const pageContext: PageContextType = useContext(PageContext);
 
   const handleClick = () => {
+    App.GetSite(props).then(() =>{
       pageContext.download.setDownloadState(false);
       pageContext.gallery.setGalleryState(false);
       pageContext.activity.setActivityState(true);
       pageContext.settings.setSettingsState(false);
-      cookies.set('myCat1', 'Pacman', { path: '/' });
+    });
   };
 
   return (

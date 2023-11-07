@@ -49,3 +49,7 @@ func (a *App) FindURL(url string) lib.ResponseType {
 	return resp
 
 }
+
+func (a *App) GetSite(r lib.ResponseType) {
+	lib.StartGetSiteJob(r)
+}
