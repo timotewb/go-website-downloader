@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	lib "gwd/lib"
+	m "gwd/models"
 )
 
 // App struct
@@ -52,4 +53,12 @@ func (a *App) FindURL(url string) lib.ResponseType {
 
 func (a *App) GetSite(r lib.ResponseType) {
 	lib.StartGetSiteJob(r)
+}
+
+func (a *App) CheckIfJobRunning() m.CheckJobIsRunningType {
+	resp, err := lib.CheckIfJobRunning()
+	if err != nil {
+		return resp
+	}
+	return resp
 }

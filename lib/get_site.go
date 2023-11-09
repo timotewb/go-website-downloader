@@ -22,7 +22,7 @@ func StartGetSiteJob(r ResponseType) {
 	} else{
 		fmt.Println("File NOT found.")
 		err = os.WriteFile("output.json", dJSON, 0644)
-		if err != nil {
+		if err == nil {
 			fmt.Println("File written.")
 		} else {
 			fmt.Println("File NOT written.")

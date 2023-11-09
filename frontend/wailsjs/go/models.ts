@@ -21,3 +21,20 @@ export namespace lib {
 
 }
 
+export namespace models {
+	
+	export class CheckJobIsRunningType {
+	    job_count: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new CheckJobIsRunningType(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.job_count = source["job_count"];
+	    }
+	}
+
+}
+
