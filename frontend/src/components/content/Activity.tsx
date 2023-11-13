@@ -6,10 +6,10 @@ function Activity() {
 
   const [jobRunning, setJobRunning] = useState(false)
 
-  App.CheckIfJobRunning().then((data) => {if(data.job_count>0){setJobRunning(true)} else{setJobRunning(false)}})
+  App.CheckActivity().then((data) => {if(data.job_count>0){setJobRunning(true)} else{setJobRunning(false)}})
 
   useEffect(() => {
-    const interval = setInterval(() => {App.CheckIfJobRunning().then((data) => {if(data.job_count>0){setJobRunning(true)} else{setJobRunning(false)}})}, 10000);
+    const interval = setInterval(() => {App.CheckActivity().then((data) => {if(data.job_count>0){setJobRunning(true)} else{setJobRunning(false)}})}, 10000);
     return () => clearInterval(interval);
    }, []);
 

@@ -1,5 +1,5 @@
 package models
 
-type CheckJobIsRunningType struct {
+type CheckActivityType struct {
 	JobCount int `json:"job_count"`
 }

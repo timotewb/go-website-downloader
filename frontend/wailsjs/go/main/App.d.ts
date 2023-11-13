@@ -3,8 +3,8 @@
 import {models} from '../models';
 import {lib} from '../models';
 
-export function CheckIfJobRunning():Promise<models.CheckJobIsRunningType>;
+export function CheckActivity():Promise<models.CheckActivityType>;
 
 export function FindURL(arg1:string):Promise<lib.ResponseType>;
 
-export function GetSite(arg1:lib.ResponseType):Promise<void>;
+export function GetSite(arg1:models.ResponseType):Promise<void>;

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	app "gwd/app"
 	lib "gwd/lib"
 	m "gwd/models"
 )
@@ -51,12 +52,12 @@ func (a *App) FindURL(url string) lib.ResponseType {
 
 }
 
-func (a *App) GetSite(r lib.ResponseType) {
-	lib.StartGetSiteJob(r)
+func (a *App) GetSite(r m.ResponseType) {
+	app.DownloadButton(r)
 }
 
-func (a *App) CheckIfJobRunning() m.CheckJobIsRunningType {
-	resp, err := lib.CheckIfJobRunning()
+func (a *App) CheckActivity() m.CheckActivityType {
+	resp, err := app.CheckActivity()
 	if err != nil {
 		return resp
 	}
