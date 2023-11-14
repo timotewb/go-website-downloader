@@ -26,6 +26,7 @@ func CheckActivity() (m.CheckActivityType, error) {
 				return cat, err
 			} else {
 				cat.JobCount = db.Activity.ActivityCount
+				cat.ActivityData = db.Activity.ActivityData
 			}
 		}
 	} else {
