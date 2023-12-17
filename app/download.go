@@ -50,7 +50,7 @@ func DownloadButton(r m.ResponseType) {
 	if err == nil {
 		fmt.Println("File written.")
 	} else {
-		panic(err)
+		fmt.Println(err)
 	}
 
 }

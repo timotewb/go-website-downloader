@@ -5,5 +5,6 @@ import (
 )
 
 var Config = m.ConfigType{
-	AppDB: "db.json",
+	AppDBFileName: "db.json",
+	AppName: "go-website-downloader",
 }
