@@ -12,4 +12,5 @@ type ActivityType struct {
 type ActivityDataType struct {
 	Url        string `json:"url"`
 	FaviconURL string `json:"favicon_url"`
+	SessionID  string `json:"session_id"`
 }

@@ -26,6 +26,7 @@ export namespace models {
 	export class ActivityDataType {
 	    url: string;
 	    favicon_url: string;
+	    session_id: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new ActivityDataType(source);
@@ -35,6 +36,7 @@ export namespace models {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.url = source["url"];
 	        this.favicon_url = source["favicon_url"];
+	        this.session_id = source["session_id"];
 	    }
 	}
 	export class CheckActivityType {

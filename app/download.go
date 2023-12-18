@@ -14,6 +14,7 @@ func DownloadButton(r m.ResponseType) {
 	var adt m.ActivityDataType
 	adt.Url = r.Url
 	adt.FaviconURL = r.FaviconURL
+	adt.SessionID = Config.SessionID
 
 	// check if file exists
 	if _, err := os.Stat(Config.AppDB); err == nil {
@@ -38,7 +39,7 @@ func DownloadButton(r m.ResponseType) {
 				fmt.Println(db)
 			}
 		}
-	} else{
+	} else {
 		fmt.Println("File NOT found.")
 		db.Activity.ActivityCount = 1
 		db.Activity.ActivityData = append(db.Activity.ActivityData, adt)

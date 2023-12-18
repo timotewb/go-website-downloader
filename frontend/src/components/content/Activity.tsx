@@ -31,7 +31,7 @@ function Activity() {
         const activity = data.data.map((r, i) => (
           <div className="activityRow">
             <span className="activityRowGroup">
-              <img src={downloadingSVG}></img>
+              <img src={downloadingSVG} alt="Downloading"></img>
               {r.favicon_url ? (
                 <img className="activityFavicon" src={r.favicon_url}></img>
               ) : (
