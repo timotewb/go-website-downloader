@@ -27,6 +27,7 @@ export namespace models {
 	    url: string;
 	    favicon_url: string;
 	    session_id: string;
+	    stale_flag: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new ActivityDataType(source);
@@ -37,6 +38,7 @@ export namespace models {
 	        this.url = source["url"];
 	        this.favicon_url = source["favicon_url"];
 	        this.session_id = source["session_id"];
+	        this.stale_flag = source["stale_flag"];
 	    }
 	}
 	export class CheckActivityType {

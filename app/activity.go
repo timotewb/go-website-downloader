@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	m "gwd/models"
 	"os"
 )
@@ -31,6 +32,12 @@ func CheckActivity() (m.CheckActivityType, error) {
 		}
 	} else {
 		return cat, nil
+	}
+	// flag if activity item was NOT created this session - stale
+	if cat.JobCount >= 1 {
+		for i := 0; i < cat.JobCount; i++ {
+			fmt.Println(cat.ActivityData[i])
+		}
 	}
 	return cat, nil
 

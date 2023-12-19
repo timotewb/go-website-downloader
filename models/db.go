@@ -13,4 +13,5 @@ type ActivityDataType struct {
 	Url        string `json:"url"`
 	FaviconURL string `json:"favicon_url"`
 	SessionID  string `json:"session_id"`
+	StaleFlag  bool   `json:"stale_flag"`
 }

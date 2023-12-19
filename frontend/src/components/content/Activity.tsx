@@ -12,18 +12,10 @@ import { JSX } from "react/jsx-runtime";
 import downloadingSVG from "../../assets/images/downloading.svg";
 import faviconDefaultSVG from "../../assets/images/favicon-default.svg";
 import pulseRing00 from "../../assets/images/pulse-ring-00.svg";
-import pulseRing01 from "../../assets/images/pulse-ring-01.svg";
-import pulseRing02 from "../../assets/images/pulse-ring-02.svg";
-import pulseRing03 from "../../assets/images/pulse-ring-03.svg";
-
-function getRandomElement<T>(arr: T[]): T | undefined {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 function Activity() {
   const [jobRunning, setJobRunning] = useState(false);
   const [activity, setActivity] = useState<JSX.Element[] | null>(null);
-  const pulseRings = [pulseRing00, pulseRing01, pulseRing02, pulseRing03];
 
   const check = () => {
     App.CheckActivity().then((data) => {
@@ -52,14 +44,14 @@ function Activity() {
     });
   };
 
-  // run for te first time the page loads
+  // run for the first time the page loads
   check();
 
   // run every 1 second
   useEffect(() => {
     const interval = setInterval(() => {
       check();
-    }, 10000);
+    }, 100000);
     return () => clearInterval(interval);
   }, []);
 
