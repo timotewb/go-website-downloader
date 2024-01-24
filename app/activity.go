@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	m "gwd/models"
 	"os"
 )
@@ -36,7 +35,11 @@ func CheckActivity() (m.CheckActivityType, error) {
 	// flag if activity item was NOT created this session - stale
 	if cat.JobCount >= 1 {
 		for i := 0; i < cat.JobCount; i++ {
-			fmt.Println(cat.ActivityData[i])
+			if cat.ActivityData[i].SessionID == Config.SessionID {
+				cat.ActivityData[i].StaleFlag = false
+			} else {
+				cat.ActivityData[i].StaleFlag = true
+			}
 		}
 	}
 	return cat, nil

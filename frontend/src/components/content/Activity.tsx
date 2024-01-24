@@ -32,7 +32,7 @@ function Activity() {
               {r.url}
             </span>
             <span className="activityRowGroup">
-              <img className="activityLoadingSVG" src={pulseRing00}></img>
+              {r.stale_flag ? <p>Cancel</p> : <img className="activityLoadingSVG" src={pulseRing00}></img>}
             </span>
           </div>
         ));
