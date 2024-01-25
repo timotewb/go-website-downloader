@@ -16,26 +16,46 @@ import pulseRing00 from "../../assets/images/pulse-ring-00.svg";
 function Activity() {
   const [jobRunning, setJobRunning] = useState(false);
   const [activity, setActivity] = useState<JSX.Element[] | null>(null);
+  const [ isHovered, setIsHovered ] = useState(false);
 
   const check = () => {
     App.CheckActivity().then((data) => {
       if (data.job_count > 0) {
-        const activity = data.data.map((r, i) => (
-          <div className="activityRow">
-            <span className="activityRowGroup">
-              <img src={downloadingSVG} alt="Downloading"></img>
-              {r.favicon_url ? (
-                <img className="activityFavicon" src={r.favicon_url}></img>
-              ) : (
-                <img className="activityFavicon" src={faviconDefaultSVG}></img>
-              )}
-              {r.url}
-            </span>
-            <span className="activityRowGroup">
-              {r.stale_flag ? <p>Cancel</p> : <img className="activityLoadingSVG" src={pulseRing00}></img>}
-            </span>
-          </div>
-        ));
+        const activity = data.data.map((r, i) => {
+
+          // use favicon url, or default
+          const favicon = r.favicon_url ? (
+            <img className="activityFavicon" src={r.favicon_url}></img>
+          ) : (
+            <img className="activityFavicon" src={faviconDefaultSVG}></img>
+          );
+
+          // show pulseRing00 if activity is NOT stale, else show Statle + Delete button
+          const stale = () => {
+            if (r.stale_flag){
+              return(
+                <span onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                  Stale
+                </span>
+              )
+            } else {
+              return(<img className="activityLoadingSVG" src={pulseRing00}></img>)
+            }
+          }
+
+          return(
+            <div className="activityRow" key={i}>
+              <span className="activityRowGroup">
+                <img src={downloadingSVG} alt="Downloading"></img>
+                {favicon}
+                {r.url}
+              </span>
+              <span className="activityRowGroup">
+                {stale()}
+              </span>
+            </div>
+          )
+      });
         setActivity(activity);
         setJobRunning(true);
       } else {
