@@ -33,3 +33,18 @@
 .activityLoadingSVG {
   height: 20px;
 }
+
+
+
+#staleButton {
+  font-size: 12px;
+  width: 60px;
+  display: flex;
+  padding: 0.1875rem 0.45rem;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  border-radius: 0.3125rem;
+  background: rgb(238, 238, 238);
+  cursor: pointer;
+}

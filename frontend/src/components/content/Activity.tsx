@@ -35,7 +35,10 @@ function Activity() {
             if (r.stale_flag){
               return(
                 <span onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-                  Stale
+                  {isHovered ?         <div
+          onClick={() => console.log("sdf")}>
+          <div id="staleButton">Remove</div>
+        </div> : <div id="staleButton">Stale</div>}
                 </span>
               )
             } else {
