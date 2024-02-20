@@ -22,12 +22,6 @@ function Activity() {
     App.CheckActivity().then((data) => {
       if (data.job_count > 0) {
         const activity = data.data.map((r, i) => {
-          
-          const newHoverStates = data.data.reduce((acc, curr, idx) => {
-            acc[idx] = false;
-            return acc;
-          }, {} as Record<number, boolean>);
-          setHoverStates(newHoverStates);
 
           // use favicon url, or default
           const favicon = r.favicon_url ? (
@@ -36,39 +30,40 @@ function Activity() {
             <img className="activityFavicon" src={faviconDefaultSVG}></img>
           );
 
-          // show pulseRing00 if activity is NOT stale, else show Statle + Delete button
+          // show pulseRing00 if activity is NOT stale, else show Statle + Remove button
           const stale = (id: number) => {
-
-            if (r.stale_flag){
-              return(<span
-                onMouseEnter={() => {
-                  setHoverStates(prevHoverStates => {
-                    const updatedHoverStates = { ...prevHoverStates, [id]: true };
-                    console.log(`Hover entered for item ${id}:`, updatedHoverStates[id]);
-                    return updatedHoverStates;
-                  });
-                }}
-                onMouseLeave={() => {
-                  setHoverStates(prevHoverStates => {
-                    const updatedHoverStates = { ...prevHoverStates, [id]: false };
-                    console.log(`Hover left for item ${id}:`, updatedHoverStates[id]);
-                    return updatedHoverStates;
-                  });
-                }}
-              >
-                {hoverStates[id] ? (
-                  <div onClick={() => console.log("sdf")}>
-                    <div id="staleButton">Remove</div>
-                  </div>
-                ) : (
-                  <div id="staleButton">Stale</div>
-                )}
-              </span>
-              )
+            if (r.stale_flag) {
+              return (
+                <div
+                  id="staleButton"
+                  key={id}
+                  onMouseEnter={() => {
+                    setHoverStates(prevHoverStates => ({
+                      ...prevHoverStates,
+                      [id]: true
+                    }));
+                    console.log(`Button ${id} is being hovered over.`);
+                  }}
+                  onMouseLeave={() => {
+                    setHoverStates(prevHoverStates => ({
+                      ...prevHoverStates,
+                      [id]: false
+                    }));
+                    console.log(`Button ${id} is no longer being hovered over.`);
+                  }}
+                  onClick={() => {
+                    console.log(`Button ${id} was clicked.`);
+                  }}
+                >
+                  {hoverStates[id] ? "Remove" : "Stale"}
+                </div>
+              );
             } else {
-              return(<img className="activityLoadingSVG" src={pulseRing00}></img>)
+              return (
+                <img className="activityLoadingSVG" src={pulseRing00}></img>
+              );
             }
-      }
+          };
 
           return(
             <div className="activityRow" key={i}>
@@ -98,7 +93,7 @@ function Activity() {
   useEffect(() => {
     const interval = setInterval(() => {
       check();
-    }, 100000);
+    }, 1000000);
     return () => clearInterval(interval);
   }, []);
 
