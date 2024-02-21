@@ -13,3 +13,7 @@ export function FindURL(arg1) {
 export function GetSite(arg1) {
   return window['go']['main']['App']['GetSite'](arg1);
 }
+
+export function RemoveStaleActivity(arg1) {
+  return window['go']['main']['App']['RemoveStaleActivity'](arg1);
+}

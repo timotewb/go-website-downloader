@@ -2,9 +2,58 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	m "gwd/models"
 	"os"
 )
+
+func RemoveStaleActivity(url string) error {
+	fmt.Println(url)
+	var db m.DBType
+
+	// check if file exists
+	if _, err := os.Stat(Config.AppDB); err == nil {
+
+		// read file in
+		data, err := os.ReadFile(Config.AppDB)
+		if err != nil {
+			return err
+		} else {
+
+			// parse to struct
+			err = json.Unmarshal(data, &db)
+			if err != nil {
+				return err
+			} else {
+				var filteredData m.ActivityType
+				o := 0
+				for i := 0; i < db.Activity.ActivityCount; i++ {
+					if db.Activity.ActivityData[i].Url != url {
+						filteredData.ActivityData = append(filteredData.ActivityData, db.Activity.ActivityData[i])
+						o++
+					}
+				}
+				filteredData.ActivityCount = o
+
+				fmt.Println(filteredData)
+
+				db.Activity = filteredData
+
+				// update file
+				dJSON, _ := json.Marshal(db)
+				err := os.WriteFile(Config.AppDB, dJSON, 0644)
+				if err == nil {
+					fmt.Println("File written.")
+				} else {
+					fmt.Println(err)
+				}
+				return nil
+			}
+		}
+	} else {
+		return err
+	}
+}
 
 func CheckActivity() (m.CheckActivityType, error) {
 

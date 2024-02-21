@@ -64,3 +64,7 @@ func (a *App) CheckActivity() m.CheckActivityType {
 	}
 	return resp
 }
+
+func (a *App) RemoveStaleActivity(url string) {
+	app.RemoveStaleActivity(url)
+}
