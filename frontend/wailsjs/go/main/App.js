@@ -14,6 +14,6 @@ export function GetSite(arg1) {
   return window['go']['main']['App']['GetSite'](arg1);
 }
 
-export function RemoveStaleActivity(arg1) {
-  return window['go']['main']['App']['RemoveStaleActivity'](arg1);
+export function RemoveStaleActivity(arg1, arg2) {
+  return window['go']['main']['App']['RemoveStaleActivity'](arg1, arg2);
 }

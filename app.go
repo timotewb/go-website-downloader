@@ -65,6 +65,6 @@ func (a *App) CheckActivity() m.CheckActivityType {
 	return resp
 }
 
-func (a *App) RemoveStaleActivity(url string) {
-	app.RemoveStaleActivity(url)
+func (a *App) RemoveStaleActivity(url string, sessionID string) {
+	app.RemoveStaleActivity(url, sessionID)
 }

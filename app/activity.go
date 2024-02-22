@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func RemoveStaleActivity(url string) error {
+func RemoveStaleActivity(url string, sessionID string) error {
 	fmt.Println(url)
 	var db m.DBType
 
@@ -28,7 +28,9 @@ func RemoveStaleActivity(url string) error {
 				var filteredData m.ActivityType
 				o := 0
 				for i := 0; i < db.Activity.ActivityCount; i++ {
-					if db.Activity.ActivityData[i].Url != url {
+					if db.Activity.ActivityData[i].Url == url && db.Activity.ActivityData[i].SessionID == sessionID {
+						// do not add
+					} else {
 						filteredData.ActivityData = append(filteredData.ActivityData, db.Activity.ActivityData[i])
 						o++
 					}

@@ -53,7 +53,7 @@ function Activity() {
                   }}
                   onClick={() => {
                     console.log(`Button ${r.url} was clicked.`);
-                    App.RemoveStaleActivity(r.url)
+                    App.RemoveStaleActivity(r.url, r.session_id)
                   }}
                 >
                   {hoverStates[id] ? "Remove" : "Stale"}

@@ -9,4 +9,4 @@ export function FindURL(arg1:string):Promise<lib.ResponseType>;
 
 export function GetSite(arg1:models.ResponseType):Promise<void>;
 
-export function RemoveStaleActivity(arg1:string):Promise<void>;
+export function RemoveStaleActivity(arg1:string,arg2:string):Promise<void>;
