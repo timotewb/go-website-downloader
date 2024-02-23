@@ -55,6 +55,7 @@ func (a *App) FindURL(url string) lib.ResponseType {
 
 func (a *App) GetSite(r m.ResponseType) {
 	app.DownloadButton(r)
+	go app.DownloadSite(r)
 }
 
 func (a *App) CheckActivity() m.CheckActivityType {

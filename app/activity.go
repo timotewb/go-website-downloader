@@ -8,7 +8,6 @@ import (
 )
 
 func RemoveStaleActivity(url string, sessionID string) error {
-	fmt.Println(url)
 	var db m.DBType
 
 	// check if file exists
@@ -36,8 +35,6 @@ func RemoveStaleActivity(url string, sessionID string) error {
 					}
 				}
 				filteredData.ActivityCount = o
-
-				fmt.Println(filteredData)
 
 				db.Activity = filteredData
 
