@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	m "gwd/models"
-	"io"
-	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -67,31 +67,43 @@ func DownloadSite(r m.ResponseType) error {
 	// download website
 	//----------------------------------------------------------------------------------------
 	time.Sleep(5 * time.Second)
-	// Send an HTTP GET request to the specified URL
-	resp, err := http.Get(r.Url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
 
-	// Read the response body
-	body, err := io.ReadAll(resp.Body)
+	u, err := url.Parse(r.Url)
 	if err != nil {
-		return err
+		panic(err)
 	}
+	u.Path = ""
+	u.RawQuery = ""
+	u.Fragment = ""
 
-	// Create a new file, or overwrite if it already exists
-	file, err := os.Create("test_site.html")
-	if err != nil {
-		return err
-	}
-	defer file.Close()
+	s := strings.Replace(u.String()[strings.Index(u.String(), "//"):], ".", "_", -1)
+	fmt.Println(s)
 
-	// Write the body to the file
-	_, err = file.Write(body)
-	if err != nil {
-		return err
-	}
+	// // Send an HTTP GET request to the specified URL
+	// resp, err := http.Get(r.Url)
+	// if err != nil {
+	// 	return err
+	// }
+	// defer resp.Body.Close()
+
+	// // Read the response body
+	// body, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// // Create a new file, or overwrite if it already exists
+	// file, err := os.Create("test_site.html")
+	// if err != nil {
+	// 	return err
+	// }
+	// defer file.Close()
+
+	// // Write the body to the file
+	// _, err = file.Write(body)
+	// if err != nil {
+	// 	return err
+	// }
 
 	//----------------------------------------------------------------------------------------
 	// update db

@@ -15,29 +15,46 @@ func StartupActions() {
 
 	//decalre variables
 	var appDir string
+	var contDir string
 
 	// check OS
 	opsys := runtime.GOOS
 	switch opsys {
 	case "windows":
 		appDir = filepath.Join(os.Getenv("LOCALAPPDATA"), "GoApps", Config.AppName)
+		contDir = filepath.Join(os.Getenv("USERPROFILE"), Config.AppName)
 	case "darwin":
 		appDir = filepath.Join(os.Getenv("HOME"), "Library", "GoApps", Config.AppName)
+		contDir = filepath.Join(os.Getenv("HOME"), Config.AppName)
 	case "linux":
 		appDir = filepath.Join("/tmp", Config.AppName)
+		contDir = filepath.Join(os.Getenv("HOME"), Config.AppName)
 	default:
 		fmt.Printf("%s.\n", opsys)
 		appDir = filepath.Join("/tmp", Config.AppName)
+		contDir = appDir
 	}
-
-	fmt.Println("")
-	fmt.Println("")
-	fmt.Println("appDir: ", appDir)
-	fmt.Println("")
-	fmt.Println("")
 
 	// run
 	actions(appDir)
+
+	db, err := ReadDB()
+	if err != nil {
+		panic(err)
+	}
+
+	// content dir
+	if db.Settings.ContentDir == "" {
+		db.Settings.ContentDir = contDir
+	}
+	_, err = os.Stat(db.Settings.ContentDir)
+	if err == nil {
+		db.Settings.ContentDirExists = true
+	} else if os.IsNotExist(err) {
+		db.Settings.ContentDirExists = false
+	} else {
+		db.Settings.ContentDirExists = true
+	}
 }
 
 func actions(appDir string) {

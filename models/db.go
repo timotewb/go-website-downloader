@@ -2,6 +2,7 @@ package models
 
 type DBType struct {
 	Activity ActivityType `json:"activity"`
+	Settings SettingsType `json:"settings"`
 }
 
 type ActivityType struct {
@@ -14,4 +15,9 @@ type ActivityDataType struct {
 	FaviconURL string `json:"favicon_url"`
 	SessionID  string `json:"session_id"`
 	StaleFlag  bool   `json:"stale_flag"`
+}
+
+type SettingsType struct {
+	ContentDir       string `json:"content_dir"`
+	ContentDirExists bool   `json:"content_dir_exists"`
 }
