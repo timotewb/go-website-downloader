@@ -69,3 +69,11 @@ func (a *App) CheckActivity() m.CheckActivityType {
 func (a *App) RemoveStaleActivity(url string, sessionID string) {
 	app.RemoveStaleActivity(url, sessionID)
 }
+
+func (a *App) GetSettings() m.SettingsType {
+	resp, err := app.ReadDB()
+	if err != nil {
+		return resp.Settings
+	}
+	return resp.Settings
+}

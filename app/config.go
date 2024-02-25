@@ -35,3 +35,8 @@ func ReadDB() (m.DBType, error) {
 		return db, err
 	}
 }
+
+func GetSettings() (m.SettingsType, error) {
+	db, err := ReadDB()
+	return db.Settings, err
+}

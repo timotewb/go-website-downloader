@@ -10,6 +10,10 @@ export function FindURL(arg1) {
   return window['go']['main']['App']['FindURL'](arg1);
 }
 
+export function GetSettings() {
+  return window['go']['main']['App']['GetSettings']();
+}
+
 export function GetSite(arg1) {
   return window['go']['main']['App']['GetSite'](arg1);
 }

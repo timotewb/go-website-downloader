@@ -91,6 +91,20 @@ export namespace models {
 	        this.favicon_url = source["favicon_url"];
 	    }
 	}
+	export class SettingsType {
+	    content_dir: string;
+	    content_dir_exists: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new SettingsType(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.content_dir = source["content_dir"];
+	        this.content_dir_exists = source["content_dir_exists"];
+	    }
+	}
 
 }
 
