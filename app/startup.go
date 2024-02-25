@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
@@ -54,6 +55,15 @@ func StartupActions() {
 		db.Settings.ContentDirExists = false
 	} else {
 		db.Settings.ContentDirExists = true
+	}
+
+	// update file
+	dJSON, _ := json.Marshal(db)
+	err = os.WriteFile(Config.AppDB, dJSON, 0644)
+	if err == nil {
+		fmt.Println("File written.")
+	} else {
+		panic(err)
 	}
 }
 
