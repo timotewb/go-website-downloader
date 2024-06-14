@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	m "gwd/models"
+	"io"
+	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -63,10 +66,15 @@ func DownloadButton(r m.ResponseType) {
 func DownloadSite(r m.ResponseType) error {
 	fmt.Println("DownloadSite()")
 
+	db1, err := ReadDB()
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	//----------------------------------------------------------------------------------------
 	// download website
 	//----------------------------------------------------------------------------------------
-	time.Sleep(5 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	u, err := url.Parse(r.Url)
 	if err != nil {
@@ -76,34 +84,75 @@ func DownloadSite(r m.ResponseType) error {
 	u.RawQuery = ""
 	u.Fragment = ""
 
-	s := strings.Replace(u.String()[strings.Index(u.String(), "//"):], ".", "_", -1)
-	fmt.Println(s)
+	// create folder names
+	s := strings.Replace(u.String()[strings.Index(u.String(), "//")+2:], ".", "_", -1)
+	currentTime := time.Now()
+	t := currentTime.Format("20060102_150405")
+	fmt.Println(s, t, r.FaviconURL)
 
-	// // Send an HTTP GET request to the specified URL
-	// resp, err := http.Get(r.Url)
-	// if err != nil {
-	// 	return err
-	// }
-	// defer resp.Body.Close()
+	// Send an HTTP GET request to the specified URL
+	resp, err := http.Get(r.Url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
 
-	// // Read the response body
-	// body, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return err
-	// }
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
 
-	// // Create a new file, or overwrite if it already exists
-	// file, err := os.Create("test_site.html")
-	// if err != nil {
-	// 	return err
-	// }
-	// defer file.Close()
+	// Create a new file, or overwrite if it already exists
+	err = os.MkdirAll(filepath.Join(db1.Settings.ContentDir, s, t), 0777)
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(filepath.Join(db1.Settings.ContentDir, s, t, "index.html"))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
 
-	// // Write the body to the file
-	// _, err = file.Write(body)
-	// if err != nil {
-	// 	return err
-	// }
+	// Write the body to the file
+	_, err = file.Write(body)
+	if err != nil {
+		return err
+	}
+
+	//----------------------------------------------------------------------------------------
+	// get favicon
+	//----------------------------------------------------------------------------------------
+
+	// Send an HTTP GET request to the specified URL
+	resp, err = http.Get(r.FaviconURL)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	// Create a new file, or overwrite if it already exists
+	err = os.MkdirAll(filepath.Join(db1.Settings.ContentDir, s, t), 0777)
+	if err != nil {
+		return err
+	}
+	file, err = os.Create(filepath.Join(db1.Settings.ContentDir, s, t, "favicon.png"))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Write the body to the file
+	_, err = file.Write(body)
+	if err != nil {
+		return err
+	}
 
 	//----------------------------------------------------------------------------------------
 	// update db
