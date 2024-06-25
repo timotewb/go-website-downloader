@@ -36,11 +36,15 @@ func StartupActions() {
 		contDir = appDir
 	}
 
-	// run
-	actions(appDir)
+	// set session config vars
+	Config.AppDB = filepath.Join(appDir, Config.AppDBFileName)
+	Config.AppDir = appDir
+	Config.SessionID = getSessionID(10)
 
+	// read database file
 	db, err := ReadDB()
 	if err != nil {
+		fmt.Println("error reading db ReadDB()")
 		panic(err)
 	}
 
@@ -57,28 +61,23 @@ func StartupActions() {
 		db.Settings.ContentDirExists = true
 	}
 
-	// update file
-	dJSON, _ := json.Marshal(db)
-	err = os.WriteFile(Config.AppDB, dJSON, 0644)
-	if err == nil {
-		fmt.Println("File written.")
-	} else {
-		panic(err)
-	}
-}
-
-func actions(appDir string) {
 	// create application folder if not exists
-	err := os.MkdirAll(appDir, os.ModePerm)
+	err = os.MkdirAll(appDir, os.ModePerm)
 	if err != nil {
 		log.Println(err)
 	}
 
-	// set session config vars
-	Config.AppDB = filepath.Join(appDir, Config.AppDBFileName)
-	Config.AppDir = appDir
-	Config.SessionID = getSessionID(10)
+	// update file
+	dJSON, _ := json.Marshal(db)
+	err = os.WriteFile(Config.AppDB, dJSON, 0644)
+	if err == nil {
+		log.Println("File written.")
+	} else {
+		log.Println(err)
+	}
 
+	// remove content dir tmp file
+	ShutdownContentDirWebServer()
 }
 
 func getSessionID(n int) string {

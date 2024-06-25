@@ -7,11 +7,10 @@ const container = document.getElementById('root')
 
 const root = createRoot(container!)
 
+console.log(":= main");
+
 root.render(
-    <React.StrictMode>
-        <App/>
-    </React.StrictMode>
+    // <React.StrictMode>
+        <App />
+    // </React.StrictMode>
 )
-
-
-// code change example

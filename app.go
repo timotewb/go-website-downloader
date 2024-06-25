@@ -77,3 +77,11 @@ func (a *App) GetSettings() m.SettingsType {
 	}
 	return resp.Settings
 }
+
+func (a *App) ListGallery() m.ListGalleryType {
+	return app.ListGallery()
+}
+
+func (a *App) ShutdownContentDirWebServer() {
+	app.ShutdownContentDirWebServer()
+}

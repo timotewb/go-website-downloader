@@ -26,6 +26,7 @@ export const PageContext = createContext<PageContextType>(
 );
 
 function App() {
+  console.log(":= App");
   const [downloadState, setDownloadState] = useState(true);
   const [galleryState, setGalleryState] = useState(false);
   const [activityState, setActivityState] = useState(false);

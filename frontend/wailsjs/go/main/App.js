@@ -18,6 +18,14 @@ export function GetSite(arg1) {
   return window['go']['main']['App']['GetSite'](arg1);
 }
 
+export function ListGallery() {
+  return window['go']['main']['App']['ListGallery']();
+}
+
 export function RemoveStaleActivity(arg1, arg2) {
   return window['go']['main']['App']['RemoveStaleActivity'](arg1, arg2);
+}
+
+export function ShutdownContentDirWebServer() {
+  return window['go']['main']['App']['ShutdownContentDirWebServer']();
 }

@@ -20,6 +20,7 @@ function Activity() {
 
   const check = () => {
     App.CheckActivity().then((data) => {
+      console.log("App.CheckActivity()");
       if (data.job_count > 0) {
         const activity = data.data.map((r, i) => {
 

@@ -5,6 +5,7 @@ import activitySVG from "../assets/images/activity.svg";
 import asettingsSVG from "../assets/images/settings.svg";
 import { useState, useContext } from "react";
 import { PageContext, PageContextType } from "../App";
+import * as App from "../../wailsjs/go/main/App";
 
 function MenuBar() {
   const pageContext: PageContextType = useContext(PageContext);
@@ -40,6 +41,9 @@ function MenuBar() {
       pageContext.gallery.setGalleryState(false);
       pageContext.activity.setActivityState(false);
       pageContext.settings.setSettingsState(false);
+    }
+    if (id !== galleryID){
+      App.ShutdownContentDirWebServer()
     }
   };
 

@@ -73,6 +73,22 @@ export namespace models {
 		    return a;
 		}
 	}
+	export class GalleryType {
+	    site_name: string;
+	    site_location: string;
+	    favicon: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new GalleryType(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.site_name = source["site_name"];
+	        this.site_location = source["site_location"];
+	        this.favicon = source["favicon"];
+	    }
+	}
 	export class ResponseType {
 	    code: number;
 	    message: string;
@@ -94,6 +110,7 @@ export namespace models {
 	export class SettingsType {
 	    content_dir: string;
 	    content_dir_exists: boolean;
+	    content_dir_wsport: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new SettingsType(source);
@@ -103,6 +120,7 @@ export namespace models {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.content_dir = source["content_dir"];
 	        this.content_dir_exists = source["content_dir_exists"];
+	        this.content_dir_wsport = source["content_dir_wsport"];
 	    }
 	}
 
