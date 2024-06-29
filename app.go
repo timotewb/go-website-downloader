@@ -42,6 +42,7 @@ func (a *App) FindURL(url string) lib.ResponseType {
 	if err != nil {
 		return resp
 	}
+	defer page.Body.Close()
 
 	// Get Favicon
 	fmt.Println("--- Favicon")

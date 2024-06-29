@@ -1,10 +1,13 @@
 package lib
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"net/url"
-	"regexp"
+	"os"
 	"strings"
 	"time"
 
@@ -12,9 +15,9 @@ import (
 )
 
 type ResponseType struct {
-	Code int `json:"code"`
-	Message string `json:"message"`
-	Url string `json:"url"`
+	Code       int    `json:"code"`
+	Message    string `json:"message"`
+	Url        string `json:"url"`
 	FaviconURL string `json:"favicon_url"`
 }
 
@@ -44,99 +47,87 @@ func VerifyURL(r ResponseType) (ResponseType, *http.Response, error) {
 	if err != nil {
 		r.Code = 2
 		r.Message = err.Error()
-	   return r, resp, err
+		return r, resp, err
 	}
 	return r, resp, nil
 }
 
-func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error){
-
-    doc, err := html.Parse(page.Body)
-    if err != nil {
-        fmt.Println("Error:", err)
-		r.Code = 3
-		r.Message = err.Error()
-        return r, err
-    }
-	defer page.Body.Close()
-
-	// base url
-	u, err := url.Parse(r.Url)
+func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error) {
+	fmt.Println(r.Url)
+	page, err := http.Get(r.Url)
 	if err != nil {
-        fmt.Println("Error:", err)
-		r.Code = 3
-		r.Message = err.Error()
-        return r, err
+		return r, err
 	}
-	u.Path = ""
-	u.RawQuery = ""
-	u.Fragment = ""
+	// Read the body of the response
+	body, err := io.ReadAll(page.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// find favicon.ico
- 	var favi func(*html.Node)
-	favi = func(n *html.Node) {
-		l := []string{"link", "meta"}
-		rgx, _ := regexp.Compile(`favicon[^/]+.(ico|png)`)
-		if StringInSlice(n.Data, l...) {
-			for _, a := range n.Attr {
-				if strings.Contains(a.Val, "favicon.ico"){
-					fmt.Println("01")
-					// this code is replicated - fix this
-					if a.Val == "favicon.ico" {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + "/" + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "//") {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "/") {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "http") {
-						r.FaviconURL = a.Val
-						return
-					} else {
-						fmt.Println(" --- Build new rule for GetFavicon() 01.")
+	// Create a tokenizer
+	tokenizer := html.NewTokenizer(bytes.NewReader(body))
+	// define tags to search in
+	tags := []string{"link", "meta"}
+
+	// Iterate over the tokens
+	for {
+		tt := tokenizer.Next()
+
+		switch tt {
+		case html.ErrorToken:
+			// End of document reached
+			return r, nil
+		case html.StartTagToken, html.SelfClosingTagToken:
+			// fmt.Printf("Token Type: %v, Token Data: %v\n", tt, tokenizer.Token().Data)
+			// attrs := tokenizer.Token().Attr
+			// if len(attrs) > 0 {
+			// 	fmt.Printf("Attributes: %+v\n", attrs)
+			// 	for _, attr := range attrs {
+			// 		fmt.Printf("Attribute: Key=%v, Val=%v\n", attr.Key, attr.Val)
+			// 	}
+			// } else {
+			// 	fmt.Println("No attributes found for this token.")
+			// }
+			// Check if the tag is an img tag
+			tagName := tokenizer.Token().Data
+			if StringInSlice(tagName, tags...) {
+				// Check for the presence of required attributes
+				hasRelIcon := false
+				hasTypeImage := false
+				hasURLFavicon := false
+				fmt.Println(tokenizer.Token().Attr)
+				for _, attr := range tokenizer.Token().Attr {
+					fmt.Printf("Tag: %v, Key: %v, Val: %v", tagName, attr.Key, attr.Val)
+					if attr.Key == "rel" && strings.Contains(strings.ToLower(attr.Val), "icon") {
+						hasRelIcon = true
 					}
-				} else if strings.Contains(a.Val, "favicon.png"){
-					fmt.Println("02")
-					if a.Val == "favicon.png" {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + "/" + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "//") {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "/") {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "http") {
-						r.FaviconURL = a.Val
-						return
-					} else {
-						fmt.Println(" --- Build new rule for GetFavicon() 02.")
+					if attr.Key == "type" && strings.Contains(strings.ToLower(attr.Val), "image") {
+						hasTypeImage = true
 					}
-				} else if rgx.MatchString(a.Val){
-					fmt.Println("03")
-					// this code is slightly different - Yay!
-					if strings.HasPrefix(a.Val, "//") {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "/") {
-						r.FaviconURL = strings.TrimSuffix(u.String(),"/") + a.Val
-						return
-					} else if strings.HasPrefix(a.Val, "http") {
-						r.FaviconURL = a.Val
-						return
-					} else {
-						fmt.Println(" --- Build new rule for GetFavicon() 03.")
+					if strings.ToLower(attr.Key) == "href" && strings.Contains(strings.ToLower(attr.Val), "favicon") {
+						hasURLFavicon = true
 					}
+				}
+				if hasRelIcon || hasTypeImage || hasURLFavicon {
+					fmt.Printf("Found matching img tag: %s\n", tokenizer.Token().Data)
 				}
 			}
 		}
-        // traverses the HTML of the webpage from the first child node
-        for c := n.FirstChild; c != nil; c = c.NextSibling {
-            favi(c)
-        }
 	}
-	favi(doc)
-	return r, err
+}
+func printNode(node *html.Node, file *os.File) {
+	if node.Type == html.ElementNode {
+		fmt.Fprintf(file, "Tag: %v\n", node.Data)
+		for _, attr := range node.Attr {
+			fmt.Fprintf(file, "Attribute: %v = %v\n", attr.Key, attr.Val)
+		}
+	}
+
+	if node.Type == html.TextNode || node.Type == html.DocumentNode {
+		fmt.Fprintf(file, "Text: %v\n", node.Data)
+	}
+
+	for child := node.FirstChild; child != nil; child = child.NextSibling {
+		printNode(child, file)
+	}
 }

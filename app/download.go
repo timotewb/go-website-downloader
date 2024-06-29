@@ -86,6 +86,9 @@ func DownloadSite(r m.ResponseType) error {
 
 	// create folder names
 	s := strings.Replace(u.String()[strings.Index(u.String(), "//")+2:], ".", "_", -1)
+	if len(s) > 4 && strings.ToUpper(s[:4]) == "WWW_" {
+		s = s[4:]
+	}
 	currentTime := time.Now()
 	t := currentTime.Format("20060102_150405")
 	fmt.Println(s, t, r.FaviconURL)
@@ -124,34 +127,36 @@ func DownloadSite(r m.ResponseType) error {
 	// get favicon
 	//----------------------------------------------------------------------------------------
 
-	// Send an HTTP GET request to the specified URL
-	resp, err = http.Get(r.FaviconURL)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
+	if r.FaviconURL != "" {
+		// Send an HTTP GET request to the specified URL
+		resp, err = http.Get(r.FaviconURL)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
 
-	// Read the response body
-	body, err = io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
+		// Read the response body
+		body, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
 
-	// Create a new file, or overwrite if it already exists
-	err = os.MkdirAll(filepath.Join(db1.Settings.ContentDir, s, t), 0777)
-	if err != nil {
-		return err
-	}
-	file, err = os.Create(filepath.Join(db1.Settings.ContentDir, s, t, "favicon.png"))
-	if err != nil {
-		return err
-	}
-	defer file.Close()
+		// Create a new file, or overwrite if it already exists
+		err = os.MkdirAll(filepath.Join(db1.Settings.ContentDir, s, t), 0777)
+		if err != nil {
+			return err
+		}
+		file, err = os.Create(filepath.Join(db1.Settings.ContentDir, s, t, "favicon.png"))
+		if err != nil {
+			return err
+		}
+		defer file.Close()
 
-	// Write the body to the file
-	_, err = file.Write(body)
-	if err != nil {
-		return err
+		// Write the body to the file
+		_, err = file.Write(body)
+		if err != nil {
+			return err
+		}
 	}
 
 	//----------------------------------------------------------------------------------------
