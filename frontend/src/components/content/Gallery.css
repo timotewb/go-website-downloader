@@ -1,11 +1,13 @@
 #gallery{
     display: flex;
-    height: 600px;
+    /* height: 600px; */
     padding: 20px;
     align-items: flex-start;
     align-content: flex-start;
     gap: 20px;
     flex-wrap: wrap;
+    overflow-y: auto;
+    height: 100%;
 }
 
 .galleryCell{
