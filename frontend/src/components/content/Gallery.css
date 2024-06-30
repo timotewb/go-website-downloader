@@ -18,3 +18,7 @@
     gap: 10px;
     flex: 1 0 0;
 }
+
+.gallerySiteSelect{
+  cursor: pointer;
+}
