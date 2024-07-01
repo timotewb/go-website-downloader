@@ -72,3 +72,32 @@ func ListGallery() m.ListGalleryType {
 	// return list of gallery items
 	return response
 }
+
+func ListGallerySite(siteName string) m.ListGallerySiteType {
+	var response m.ListGallerySiteType
+
+	// convert siteName to siteNamePath (from pretty to valid folder path)
+	siteNamePath := strings.ReplaceAll(siteName, ".", "_")
+
+	// get settings - content dir
+	settings, err := GetSettings()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// list folders in content directory and add to response var
+	files, err := os.ReadDir(filepath.Join(settings.ContentDir, siteNamePath))
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, file := range files {
+		if file.IsDir() {
+			response = append(response, m.GallerySiteType{
+				DateTime: file.Name(),
+				Favicon:  "http://localhost:" + strconv.Itoa(int(settings.ContentDirWSPort)) + "/" + siteNamePath + "/" + file.Name() + "/" + "favicon.png",
+			})
+		}
+	}
+
+	return response
+}

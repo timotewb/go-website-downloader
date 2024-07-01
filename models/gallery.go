@@ -6,3 +6,9 @@ type GalleryType struct {
 	Favicon      string `json:"favicon"`
 }
 type ListGalleryType []GalleryType
+
+type GallerySiteType struct {
+	DateTime string `json:"date_time"`
+	Favicon  string `json:"favicon"`
+}
+type ListGallerySiteType []GallerySiteType

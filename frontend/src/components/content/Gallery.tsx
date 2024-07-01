@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect, useRef } from "react";
 import "./Gallery.css";
 import "./shared.css";
 import * as App from "../../../wailsjs/go/main/App";
@@ -11,43 +11,73 @@ function Gallery() {
   const pageContext: PageContextType = useContext(PageContext);
   const [gallery, setGallery] = useState<JSX.Element[] | null>(null);
   const [siteName, setSiteName] = useState("");
+  const inputRef = useRef("");
 
   const check = () => {
+    const handleClick = (site: string) => {
+      setSiteName(site);
+      pageContext.gallery.setShowSiteList(true);
+    };
 
-  const handleClick = (site: string) => {
-    setSiteName(site);
-    pageContext.gallery.setShowSiteList(true);
-  };
-
-  App.ListGallery().then((data)=>{
-    console.log("App.ListGallery()");
-    const gallery = data.map((s: models.GalleryType, i: number) => {
-      return (
-        <div className="galleryCell" key={i}>
-            <span onClick={() => handleClick(s.site_name)} className="gallerySiteSelect">
+    App.ListGallery().then((data) => {
+      console.log("App.ListGallery()");
+      const gallery = data.map((s: models.GalleryType, i: number) => {
+        return (
+          <div className="galleryCell" key={i}>
+            <span
+              onClick={() => handleClick(s.site_name)}
+              className="gallerySiteSelect"
+            >
               <img id="faviconImg" src={s.favicon}></img>
               <br />
               {s.site_name}
             </span>
-        </div>
-      )
+          </div>
+        );
+      });
+      setGallery(gallery);
     });
-    setGallery(gallery);
-  });
-};
-useEffect(() => {check();}, []);
-
+  };
   const renderContent = () => {
-    if (pageContext.gallery.showSiteList){
+    if (pageContext.gallery.showSiteList) {
       return <ListSite site_name={siteName} />;
     }
-    return gallery;
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement, Element>) => {
+      e.target.placeholder = "Enter URL";
+    };
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement, Element>) => {
+      e.target.placeholder = "";
+    };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      inputRef.current = e.target.value;
+    };
+    return (
+      <>
+        <div id="input">
+          <input
+            id="inputArea"
+            placeholder="Enter URL"
+            onFocus={(e) => {
+              handleFocus(e);
+            }}
+            onBlur={(e) => {
+              handleBlur(e);
+            }}
+            onChange={(e) => handleChange(e)}
+          ></input>
+        </div>
+        <div id="gallery">{gallery}</div>
+      </>
+    );
   };
-  return(
-    <div id="gallery">
-      {renderContent()}
-    </div>
-  );
+
+  useEffect(() => {
+    check();
+    renderContent();
+  }, []);
+
+
+  return renderContent();
 }
 
 export default Gallery;

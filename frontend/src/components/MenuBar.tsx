@@ -21,6 +21,7 @@ function MenuBar() {
       pageContext.gallery.setGalleryState(false);
       pageContext.activity.setActivityState(false);
       pageContext.settings.setSettingsState(false);
+      pageContext.gallery.setShowSiteList(false);
     } else if (id === galleryID) {
       pageContext.download.setDownloadState(false);
       pageContext.gallery.setGalleryState(true);
@@ -31,16 +32,19 @@ function MenuBar() {
       pageContext.gallery.setGalleryState(false);
       pageContext.activity.setActivityState(true);
       pageContext.settings.setSettingsState(false);
+      pageContext.gallery.setShowSiteList(false);
     } else if (id === settingsID) {
       pageContext.download.setDownloadState(false);
       pageContext.gallery.setGalleryState(false);
       pageContext.activity.setActivityState(false);
       pageContext.settings.setSettingsState(true);
+      pageContext.gallery.setShowSiteList(false);
     } else {
       pageContext.download.setDownloadState(true);
       pageContext.gallery.setGalleryState(false);
       pageContext.activity.setActivityState(false);
       pageContext.settings.setSettingsState(false);
+      pageContext.gallery.setShowSiteList(false);
     }
     if (id !== galleryID){
       App.ShutdownContentDirWebServer()

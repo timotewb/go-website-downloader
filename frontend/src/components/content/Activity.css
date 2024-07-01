@@ -11,7 +11,7 @@
   display: flex;
   padding: 5px 0px;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   align-self: stretch;
 }
 

@@ -73,6 +73,20 @@ export namespace models {
 		    return a;
 		}
 	}
+	export class GallerySiteType {
+	    date_time: string;
+	    favicon: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new GallerySiteType(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.date_time = source["date_time"];
+	        this.favicon = source["favicon"];
+	    }
+	}
 	export class GalleryType {
 	    site_name: string;
 	    site_location: string;

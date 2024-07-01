@@ -22,6 +22,10 @@ export function ListGallery() {
   return window['go']['main']['App']['ListGallery']();
 }
 
+export function ListGallerySite(arg1) {
+  return window['go']['main']['App']['ListGallerySite'](arg1);
+}
+
 export function RemoveStaleActivity(arg1, arg2) {
   return window['go']['main']['App']['RemoveStaleActivity'](arg1, arg2);
 }
