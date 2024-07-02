@@ -90,3 +90,7 @@ func (a *App) ShutdownContentDirWebServer() {
 func (a *App) ListGallerySite(siteName string) m.ListGallerySiteType {
 	return app.ListGallerySite(siteName)
 }
+
+func (a *App) UpdateContentDir() {
+	app.UpdateContentDir(a.ctx)
+}

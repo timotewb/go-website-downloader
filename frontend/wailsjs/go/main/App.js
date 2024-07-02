@@ -33,3 +33,7 @@ export function RemoveStaleActivity(arg1, arg2) {
 export function ShutdownContentDirWebServer() {
   return window['go']['main']['App']['ShutdownContentDirWebServer']();
 }
+
+export function UpdateContentDir() {
+  return window['go']['main']['App']['UpdateContentDir']();
+}
