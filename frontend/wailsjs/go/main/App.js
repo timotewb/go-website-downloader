@@ -37,3 +37,7 @@ export function ShutdownContentDirWebServer() {
 export function UpdateContentDir() {
   return window['go']['main']['App']['UpdateContentDir']();
 }
+
+export function UpdatePortNumber(arg1) {
+  return window['go']['main']['App']['UpdatePortNumber'](arg1);
+}

@@ -20,3 +20,5 @@ export function RemoveStaleActivity(arg1:string,arg2:string):Promise<void>;
 export function ShutdownContentDirWebServer():Promise<void>;
 
 export function UpdateContentDir():Promise<void>;
+
+export function UpdatePortNumber(arg1:number):Promise<void>;

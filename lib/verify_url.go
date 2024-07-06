@@ -49,10 +49,22 @@ func VerifyURL(r ResponseType) (ResponseType, *http.Response, error) {
 func GetFavicon(r ResponseType, page *http.Response) (ResponseType, error) {
 
 	//----------------------------------------------------------------------------------------
+	// https://icons.duckduckgo.com/ip3/
+	//----------------------------------------------------------------------------------------
+	r.FaviconURL = "https://icons.duckduckgo.com/ip3/" + strings.Split(strings.TrimPrefix(strings.TrimPrefix(r.Url, "http://"), "https://"), "/")[0] + ".ico"
+	resp, err := http.Get(r.Url)
+	if err == nil && resp.StatusCode == http.StatusOK {
+		return r, nil
+	}
+
+	//----------------------------------------------------------------------------------------
 	// https://www.icon.horse/icon/
 	//----------------------------------------------------------------------------------------
 	r.FaviconURL = "https://www.icon.horse/icon/" + strings.Split(strings.TrimPrefix(strings.TrimPrefix(r.Url, "http://"), "https://"), "/")[0]
+	resp, err = http.Get(r.Url)
+	if err == nil && resp.StatusCode == http.StatusOK {
+		return r, nil
+	}
 
-	fmt.Println(r.FaviconURL)
 	return r, nil
 }

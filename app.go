@@ -94,3 +94,7 @@ func (a *App) ListGallerySite(siteName string) m.ListGallerySiteType {
 func (a *App) UpdateContentDir() {
 	app.UpdateContentDir(a.ctx)
 }
+
+func (a *App) UpdatePortNumber(port int16) {
+	app.UpdatePortNumber(port)
+}

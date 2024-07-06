@@ -44,8 +44,8 @@ func StartupActions() {
 	// read database file
 	db, err := ReadDB()
 	if err != nil {
-		fmt.Println("error reading db ReadDB()")
-		panic(err)
+		log.Println("error from StartupActions():")
+		log.Printf("    ReadDB(): %v", err)
 	}
 
 	// content dir
@@ -64,16 +64,16 @@ func StartupActions() {
 	// create application folder if not exists
 	err = os.MkdirAll(appDir, os.ModePerm)
 	if err != nil {
-		log.Println(err)
+		log.Println("error from StartupActions():")
+		log.Printf("    os.MkdirAll(): %v", err)
 	}
 
 	// update file
 	dJSON, _ := json.Marshal(db)
 	err = os.WriteFile(Config.AppDB, dJSON, 0644)
-	if err == nil {
-		log.Println("File written.")
-	} else {
-		log.Println(err)
+	if err != nil {
+		log.Println("error from StartupActions():")
+		log.Printf("    os.WriteFile(): %v", err)
 	}
 
 	// remove content dir tmp file
