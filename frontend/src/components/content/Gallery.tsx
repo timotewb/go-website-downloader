@@ -13,29 +13,45 @@ function Gallery() {
   const [siteName, setSiteName] = useState("");
   const inputRef = useRef("");
 
-  const check = () => {
+  const getData = (searchTerm: string) => {
     const handleClick = (site: string) => {
       setSiteName(site);
       pageContext.gallery.setShowSiteList(true);
     };
-
     App.ListGallery().then((data) => {
-      console.log("App.ListGallery()");
-
-      data.sort((a: models.GalleryType, b: models.GalleryType) =>a.site_name.localeCompare(b.site_name));
+      data.sort((a: models.GalleryType, b: models.GalleryType) =>
+        a.site_name.localeCompare(b.site_name)
+      );
       const gallery = data.map((s: models.GalleryType, i: number) => {
-        return (
-          <div className="galleryCell" key={i}>
-            <span
-              onClick={() => handleClick(s.site_name)}
-              className="gallerySiteSelect"
-            >
-              <img id="faviconImg" src={s.favicon}></img>
-              <br />
-              {s.site_name}
-            </span>
-          </div>
-        );
+        if (searchTerm.trim().length >= 2) {
+          if (s.site_name.includes(searchTerm)) {
+            return (
+              <div className="galleryCell" key={i}>
+                <span
+                  onClick={() => handleClick(s.site_name)}
+                  className="gallerySiteSelect"
+                >
+                  <img id="faviconImg" src={s.favicon}></img>
+                  <br />
+                  {s.site_name}
+                </span>
+              </div>
+            );
+          }
+        } else {
+          return (
+            <div className="galleryCell" key={i}>
+              <span
+                onClick={() => handleClick(s.site_name)}
+                className="gallerySiteSelect"
+              >
+                <img id="faviconImg" src={s.favicon}></img>
+                <br />
+                {s.site_name}
+              </span>
+            </div>
+          );
+        }
       });
       setGallery(gallery);
     });
@@ -45,12 +61,13 @@ function Gallery() {
       return <ListSite site_name={siteName} />;
     }
     const handleBlur = (e: React.FocusEvent<HTMLInputElement, Element>) => {
-      e.target.placeholder = "Enter URL";
+      e.target.placeholder = "Search";
     };
     const handleFocus = (e: React.FocusEvent<HTMLInputElement, Element>) => {
       e.target.placeholder = "";
     };
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      getData(e.target.value);
       inputRef.current = e.target.value;
     };
     return (
@@ -58,7 +75,7 @@ function Gallery() {
         <div id="input">
           <input
             id="inputArea"
-            placeholder="Enter URL"
+            placeholder="Search"
             onFocus={(e) => {
               handleFocus(e);
             }}
@@ -74,10 +91,9 @@ function Gallery() {
   };
 
   useEffect(() => {
-    check();
+    getData("");
     renderContent();
   }, []);
-
 
   return renderContent();
 }
