@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -45,8 +46,11 @@ func UpdateContentDir(ctx context.Context) {
 		}
 	}
 
-	log.Printf("message from UpdateContentDir(): dir provided %v", dir)
+	log.Printf("message from UpdateContentDir(): dir provided '%v'", dir)
 	if dir != "" {
+		if filepath.Base(dir) != db.Settings.ApplicationName {
+			dir = filepath.Join(dir, db.Settings.ApplicationName)
+		}
 		fileInfo, err := os.Lstat(db.Settings.ContentDir)
 		if err != nil {
 			log.Printf("error from UpdateContentDir():")
@@ -138,33 +142,44 @@ func moveFiles(src string, dst string) error {
 		return err
 	}
 
-	err = filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
+	err = filepath.Walk(src, func(srcFile string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() {
-			// Create destination file
-			dstPath := filepath.Join(dst, filepath.Base(path))
-			dstFile, err := os.Create(dstPath)
+		if !info.IsDir() && info.Name() != ".DS_Store" {
+			dstFile := strings.ReplaceAll(srcFile, src, dst)
+			dstPath := filepath.Dir(dstFile)
+			fmt.Printf("srcFile: %v\ndstFile: %v\ndstPath: %v\n\n", srcFile, dstFile, dstPath)
+			// Create destination directories
+			err = os.MkdirAll(dstPath, 0755)
 			if err != nil {
 				return err
 			}
-			defer dstFile.Close()
+			// Create destination file
+			df, err := os.Create(dstFile)
+			if err != nil {
+				return err
+			}
+			defer df.Close()
 
 			// Copy contents of source file to destination file
-			srcFile, err := os.Open(path)
+			sf, err := os.Open(srcFile)
 			if err != nil {
 				return err
 			}
-			defer srcFile.Close()
+			defer sf.Close()
 
-			_, err = io.Copy(dstFile, srcFile)
+			_, err = io.Copy(df, sf)
 			if err != nil {
 				return err
 			}
 		}
 		return nil
 	})
+	err = os.RemoveAll(src)
+	if err != nil {
+		return err
+	}
 
 	return err
 }

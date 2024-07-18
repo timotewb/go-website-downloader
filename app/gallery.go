@@ -4,7 +4,9 @@ import (
 	"fmt"
 	m "gwd/models"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -100,4 +102,50 @@ func ListGallerySite(siteName string) m.ListGallerySiteType {
 	}
 
 	return response
+}
+
+func OpenSite(siteName string, dateTime string) error {
+	// get settings - content dir
+	settings, err := GetSettings()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	url := "http://localhost:" + strconv.Itoa(int(settings.ContentDirWSPort)) + "/" + strings.ReplaceAll(siteName, ".", "_") + "/" + dateTime + "/page/index.html"
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+		args = []string{url}
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		// Check if running under WSL
+		if isWSL() {
+			// Use 'cmd.exe /c start' to open the URL in the default Windows browser
+			cmd = "cmd.exe"
+			args = []string{"/c", "start", url}
+		} else {
+			// Use xdg-open on native Linux environments
+			cmd = "xdg-open"
+			args = []string{url}
+		}
+	}
+	if len(args) > 1 {
+		// args[0] is used for 'start' command argument, to prevent issues with URLs starting with a quote
+		args = append(args[:1], append([]string{""}, args[1:]...)...)
+	}
+	return exec.Command(cmd, args...).Start()
+}
+
+// isWSL checks if the Go program is running inside Windows Subsystem for Linux
+func isWSL() bool {
+	releaseData, err := exec.Command("uname", "-r").Output()
+	if err != nil {
+		return false
+	}
+	return strings.Contains(strings.ToLower(string(releaseData)), "microsoft")
 }

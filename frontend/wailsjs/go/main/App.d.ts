@@ -15,6 +15,8 @@ export function ListGallery():Promise<models.ListGalleryType>;
 
 export function ListGallerySite(arg1:string):Promise<models.ListGallerySiteType>;
 
+export function OpenSite(arg1:string,arg2:string):Promise<void>;
+
 export function RemoveStaleActivity(arg1:string,arg2:string):Promise<void>;
 
 export function ShutdownContentDirWebServer():Promise<void>;

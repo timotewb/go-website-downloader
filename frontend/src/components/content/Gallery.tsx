@@ -21,6 +21,8 @@ function Gallery() {
 
     App.ListGallery().then((data) => {
       console.log("App.ListGallery()");
+
+      data.sort((a: models.GalleryType, b: models.GalleryType) =>a.site_name.localeCompare(b.site_name));
       const gallery = data.map((s: models.GalleryType, i: number) => {
         return (
           <div className="galleryCell" key={i}>

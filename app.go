@@ -98,3 +98,7 @@ func (a *App) UpdateContentDir() {
 func (a *App) UpdatePortNumber(port int16) {
 	app.UpdatePortNumber(port)
 }
+
+func (a *App) OpenSite(siteName string, dateTime string) {
+	app.OpenSite(siteName, dateTime)
+}

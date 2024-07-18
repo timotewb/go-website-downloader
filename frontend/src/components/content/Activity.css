@@ -21,6 +21,13 @@
   gap: 10px;
   align-self: stretch;
 }
+.listSiteRowGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+  cursor: pointer;
+}
 
 .activityFavicon {
   height: 20px;
