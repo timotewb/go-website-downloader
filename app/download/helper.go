@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"golang.org/x/net/html"
 )
@@ -20,23 +21,27 @@ func applyActions(node *html.Node, dm *downloadManagerType) {
 	switch node.Data {
 	case "a":
 		aAction(node, dm)
+
+	case "link":
+		linkAction(node, dm)
 	}
+
 }
 
 func writeOutPage(n *html.Node, lt linkType, dm *downloadManagerType) {
-	log.Printf("writeOutPage('%v')", lt.ValOriginal)
+	// log.Printf("writeOutPage('%v')", lt.SaveDir)
 	// create dirs
-	dirName := filepath.Dir(lt.ValNew)
+	dirName := filepath.Dir(lt.SaveDir)
 	err := os.MkdirAll(dirName, 0755)
 	if err != nil {
-		fmt.Printf("Error creating directory: %v\n", err)
+		log.Fatalf("Error creating directory: %v\n", err)
 		return
 	}
 	// write file
 	var buf bytes.Buffer
 	w := io.Writer(&buf)
 	html.Render(w, n)
-	err = os.WriteFile(lt.ValNew, []byte(buf.String()), 0644)
+	err = os.WriteFile(lt.SaveDir, []byte(buf.String()), 0644)
 	if err != nil {
 		log.Fatalf("Failed creating file: %s", err)
 	} else {
@@ -54,6 +59,34 @@ func updateDMLT(lt linkType, dm *downloadManagerType) {
 	}
 }
 
+func linkAction(node *html.Node, dm *downloadManagerType) {
+	// find the href attribute and get tidy link
+	for i, attr := range node.Attr {
+		if attr.Key == "href" {
+			// check if we have already actioned the path
+			var lt linkType
+			lt = checkLinkTypes(node, attr, dm)
+			if lt.IsEmpty() {
+				// we have not actioned this path
+				lt = addLinkType(node, attr, dm, "resource")
+			}
+			if !lt.IsEmpty() {
+				// Create a new attribute with the modified value and update
+				// overwrite original attribute
+				newNodeAttr := html.Attribute{Key: lt.Attr, Namespace: attr.Namespace, Val: lt.ValNew}
+				node.Attr[i] = newNodeAttr
+
+				// add original val
+				newNodeAttr = html.Attribute{Key: "original_" + lt.Attr, Namespace: attr.Namespace, Val: lt.ValOriginal}
+				node.Attr = append(node.Attr, newNodeAttr)
+
+				// add get url val
+				newNodeAttr = html.Attribute{Key: "geturl_" + lt.Attr, Namespace: attr.Namespace, Val: lt.GetURL}
+				node.Attr = append(node.Attr, newNodeAttr)
+			}
+		}
+	}
+}
 func aAction(node *html.Node, dm *downloadManagerType) {
 	// find the href attribute and get tidy link
 	for i, attr := range node.Attr {
@@ -87,9 +120,10 @@ func addLinkType(node *html.Node, attr html.Attribute, dm *downloadManagerType, 
 
 	var lt linkType
 	lt.WrittenOut = false
-	if kind == "page" {
-		lt.ValNew = filepath.Join(dm.RootDir, kind, generateRandomString(10, dm)+".html")
-	}
+	lt.Kind = kind
+	fn := generateRandomString(10, dm)
+	lt.SaveDir = filepath.Join(dm.RootDir, kind, fn+".html")
+	lt.ValNew = filepath.Join(dm.RootWSDir, kind, fn+".html")
 
 	url := attr.Val
 
@@ -139,6 +173,12 @@ func addLinkType(node *html.Node, attr html.Attribute, dm *downloadManagerType, 
 	// url starting with http:// or https:// (used later)
 	httpLink, _ := regexp.MatchString(`^http:\/\/|https:\/\/[a-zA-Z0-9]+`, url)
 	if httpLink {
+		lt.Data = node.Data
+		lt.Attr = attr.Key
+		lt.ValOriginal = url
+		lt.GetURL = url
+
+		dm.Links = append(dm.Links, lt)
 		return lt
 	}
 
@@ -225,4 +265,29 @@ func generateRandomString(length int, dm *downloadManagerType) string {
 	}
 
 	return string(sb)
+}
+func updateLogFile(filePath string, text string) error {
+	currentTime := time.Now().Format("2006-01-02 15:04:05")
+
+	dirName := filepath.Dir(filePath)
+	err := os.MkdirAll(dirName, 0755)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	// Open the file in append mode ('a')
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	formattedMessage := fmt.Sprintf("%v - %v\n", currentTime, text)
+
+	// Convert the text to bytes and write it to the file
+	_, err = file.Write([]byte(formattedMessage))
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	return nil
 }

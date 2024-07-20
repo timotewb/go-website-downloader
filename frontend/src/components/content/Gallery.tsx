@@ -13,17 +13,25 @@ function Gallery() {
   const [siteName, setSiteName] = useState("");
   const inputRef = useRef("");
 
-  const getData = (searchTerm: string) => {
+  const getData = (searchTerm: string, sort: number = 0) => {
     const handleClick = (site: string) => {
       setSiteName(site);
       pageContext.gallery.setShowSiteList(true);
     };
     App.ListGallery().then((data) => {
-      data.sort((a: models.GalleryType, b: models.GalleryType) =>
-        a.site_name.localeCompare(b.site_name)
-      );
+      if (sort ===0){
+        // sort data ascending
+        data.sort((a: models.GalleryType, b: models.GalleryType) =>
+          a.site_name.localeCompare(b.site_name)
+        );
+      } else if (sort ===1){
+        // sort data ascending
+        data.sort((a: models.GalleryType, b: models.GalleryType) =>
+          b.site_name.localeCompare(a.site_name)
+        );
+      }
       const gallery = data.map((s: models.GalleryType, i: number) => {
-        if (searchTerm.trim().length >= 2) {
+        if (searchTerm.trim().length >= 1) {
           if (s.site_name.includes(searchTerm)) {
             return (
               <div className="galleryCell" key={i}>

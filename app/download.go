@@ -95,7 +95,7 @@ func DownloadSite(r m.ResponseType) error {
 	t := currentTime.Format("20060102_150405")
 	log.Println(s, t, r.FaviconURL)
 
-	download.DownloadManager(r.Url, filepath.Join(db1.Settings.ContentDir, s, t))
+	download.DownloadManager(r.Url, filepath.Join(db1.Settings.ContentDir, s, t), filepath.Join("/", s, t))
 
 	// // Send an HTTP GET request to the specified URL
 	// resp, err := http.Get(r.Url)

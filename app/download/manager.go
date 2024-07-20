@@ -1,6 +1,7 @@
 package download
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -8,7 +9,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func DownloadManager(url string, rootDir string) {
+func DownloadManager(url string, rootDir string, rootWSDir string) {
 
 	var dm downloadManagerType
 	dm.UserURL = url
@@ -23,11 +24,15 @@ func DownloadManager(url string, rootDir string) {
 	}
 	dm.RootURL = rootURL
 	dm.RootDir = rootDir
+	dm.RootWSDir = rootWSDir
+	dm.LogFile = filepath.Join(rootDir, "job_log.log")
 
 	// define linkType for root url
 	var lt linkType
 	lt.GetURL = rootURL
-	lt.ValNew = filepath.Join(dm.RootDir, generateRandomString(10, &dm)+".html")
+	lt.Kind = "page"
+	lt.SaveDir = filepath.Join(dm.RootDir, lt.Kind, "index.html")
+	lt.ValNew = filepath.Join(dm.RootWSDir, lt.Kind, "page/index.html")
 	lt.ValOriginal = "/"
 	lt.WrittenOut = false
 	lt.Attr = "href"
@@ -39,7 +44,11 @@ func DownloadManager(url string, rootDir string) {
 }
 
 func downloadURL(lt linkType, dm *downloadManagerType) {
-	log.Printf("downloadURL('%v')", lt.GetURL)
+	log.Printf("downloadURL('%v')\n", lt.GetURL)
+	err := updateLogFile(dm.LogFile, fmt.Sprintf("Kind: %v, GetURL: %v", lt.Kind, lt.GetURL))
+	if err != nil {
+		log.Printf("err from updateLogFile(): %v", err)
+	}
 
 	// download url and parse
 	resp, err := http.Get(lt.GetURL)
@@ -49,17 +58,20 @@ func downloadURL(lt linkType, dm *downloadManagerType) {
 	defer resp.Body.Close()
 	doc, _ := html.Parse(resp.Body)
 
-	// define crawler and crawl
-	var crawler func(*html.Node)
-	crawler = func(node *html.Node) {
-		if node.Type == html.ElementNode {
-			applyActions(node, dm)
+	// if kind is page, search for links
+	if lt.Kind == "page" {
+		// define crawler and crawl
+		var crawler func(*html.Node)
+		crawler = func(node *html.Node) {
+			if node.Type == html.ElementNode {
+				applyActions(node, dm)
+			}
+			for child := node.FirstChild; child != nil; child = child.NextSibling {
+				crawler(child)
+			}
 		}
-		for child := node.FirstChild; child != nil; child = child.NextSibling {
-			crawler(child)
-		}
+		crawler(doc)
 	}
-	crawler(doc)
 	writeOutPage(doc, lt, dm)
 
 	// depth +1 - this could cause some funky things with dm being pased around and updated in nested calls

@@ -23,7 +23,6 @@ function Activity() {
       console.log("App.CheckActivity()");
       if (data.job_count > 0) {
         const activity = data.data.map((r, i) => {
-
           // use favicon url, or default
           const favicon = r.favicon_url ? (
             <img className="activityFavicon" src={r.favicon_url}></img>
@@ -39,22 +38,24 @@ function Activity() {
                   id="staleButton"
                   key={id}
                   onMouseEnter={() => {
-                    setHoverStates(prevHoverStates => ({
+                    setHoverStates((prevHoverStates) => ({
                       ...prevHoverStates,
-                      [id]: true
+                      [id]: true,
                     }));
                     console.log(`Button ${id} is being hovered over.`);
                   }}
                   onMouseLeave={() => {
-                    setHoverStates(prevHoverStates => ({
+                    setHoverStates((prevHoverStates) => ({
                       ...prevHoverStates,
-                      [id]: false
+                      [id]: false,
                     }));
-                    console.log(`Button ${id} is no longer being hovered over.`);
+                    console.log(
+                      `Button ${id} is no longer being hovered over.`
+                    );
                   }}
                   onClick={() => {
                     console.log(`Button ${r.url} was clicked.`);
-                    App.RemoveStaleActivity(r.url, r.session_id)
+                    App.RemoveStaleActivity(r.url, r.session_id);
                   }}
                 >
                   {hoverStates[id] ? "Remove" : "Stale"}
@@ -67,19 +68,17 @@ function Activity() {
             }
           };
 
-          return(
+          return (
             <div className="activityRow" key={i}>
               <span className="activityRowGroup">
                 <img src={downloadingSVG} alt="Downloading"></img>
                 {favicon}
                 {r.url}
               </span>
-              <span className="activityRowGroup">
-                {stale(i)}
-              </span>
+              <span className="activityRowGroup">{stale(i)}</span>
             </div>
-          )
-      });
+          );
+        });
         setActivity(activity);
         setJobRunning(true);
       } else {
