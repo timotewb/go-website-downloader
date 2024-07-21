@@ -125,7 +125,6 @@ export namespace models {
 	    content_dir: string;
 	    content_dir_exists: boolean;
 	    content_dir_wsport: number;
-	    application_name: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new SettingsType(source);
@@ -136,7 +135,6 @@ export namespace models {
 	        this.content_dir = source["content_dir"];
 	        this.content_dir_exists = source["content_dir_exists"];
 	        this.content_dir_wsport = source["content_dir_wsport"];
-	        this.application_name = source["application_name"];
 	    }
 	}
 

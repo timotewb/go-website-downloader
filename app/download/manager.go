@@ -34,7 +34,7 @@ func DownloadManager(url string, rootDir string, rootWSDir string) {
 	lt.GetURL = rootURL
 	lt.Kind = "page"
 	lt.SaveDir = filepath.Join(dm.RootDir, lt.Kind, "index.html")
-	lt.ValNew = filepath.Join(dm.RootWSDir, lt.Kind, "page/index.html")
+	lt.ValNew = filepath.Join(dm.RootWSDir, lt.Kind, "index.html")
 	lt.ValOriginal = "/"
 	lt.WrittenOut = false
 	lt.Attr = "href"
@@ -46,7 +46,7 @@ func DownloadManager(url string, rootDir string, rootWSDir string) {
 }
 
 func downloadURL(lt linkType, dm *downloadManagerType) {
-	log.Printf("downloadURL('%v')\n", lt.GetURL)
+	log.Printf("downloadURL('%v') with kind='%v'\n", lt.GetURL, lt.Kind)
 	err := updateLogFile(dm.LogFile, fmt.Sprintf("Kind: %v, GetURL: %v", lt.Kind, lt.GetURL))
 	if err != nil {
 		log.Printf("err from updateLogFile(): %v", err)
@@ -60,7 +60,7 @@ func downloadURL(lt linkType, dm *downloadManagerType) {
 	defer resp.Body.Close()
 
 	// if kind is page, search for links
-	if lt.Kind == "page" && resp.StatusCode != http.StatusOK {
+	if lt.Kind == "page" {
 		doc, _ := html.Parse(resp.Body)
 		// define crawler and crawl
 		var crawler func(*html.Node)

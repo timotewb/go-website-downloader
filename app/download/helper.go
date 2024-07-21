@@ -52,29 +52,49 @@ func writeOutPage(n *html.Node, lt linkType, dm *downloadManagerType) {
 
 func updateDMLT(lt linkType, dm *downloadManagerType) {
 	for i, l := range dm.Links {
-		if l.ValNew == lt.ValNew {
+		if l.ValOriginal == lt.ValOriginal {
 			dm.Links[i].WrittenOut = true
 			return
 		}
 	}
 }
 
+func stringContainsStringList(s string, sl []string) bool {
+	for _, c := range sl {
+		if strings.Contains(s, c) {
+			return true
+		}
+	}
+	return false
+}
+
 func linkAction(node *html.Node, dm *downloadManagerType) {
+	var hrefBOOL, typeBOOL bool
+	var hrefAttr html.Attribute
+	var hreafINDX int
 	// find the href attribute and get tidy link
 	for i, attr := range node.Attr {
 		if attr.Key == "href" {
+			hrefAttr = attr
+			hreafINDX = i
+			hrefBOOL = true
+		} else if attr.Key == "type" {
+			typeBOOL = stringContainsStringList(attr.Val, []string{"text/css", "text/javascript"})
+		}
+
+		if hrefBOOL && typeBOOL {
 			// check if we have already actioned the path
 			var lt linkType
-			lt = checkLinkTypes(node, attr, dm)
+			lt = checkLinkTypes(node, hrefAttr, dm)
 			if lt.IsEmpty() {
 				// we have not actioned this path
-				lt = addLinkType(node, attr, dm, "resource")
+				lt = addLinkType(node, hrefAttr, dm, "resource")
 			}
 			if !lt.IsEmpty() {
 				// Create a new attribute with the modified value and update
 				// overwrite original attribute
 				newNodeAttr := html.Attribute{Key: lt.Attr, Namespace: attr.Namespace, Val: lt.ValNew}
-				node.Attr[i] = newNodeAttr
+				node.Attr[hreafINDX] = newNodeAttr
 
 				// add original val
 				newNodeAttr = html.Attribute{Key: "original_" + lt.Attr, Namespace: attr.Namespace, Val: lt.ValOriginal}
@@ -86,6 +106,7 @@ func linkAction(node *html.Node, dm *downloadManagerType) {
 			}
 		}
 	}
+
 }
 func aAction(node *html.Node, dm *downloadManagerType) {
 	// find the href attribute and get tidy link
@@ -178,13 +199,24 @@ func addLinkType(node *html.Node, attr html.Attribute, dm *downloadManagerType, 
 	// url starting with http:// or https:// (used later)
 	httpLink, _ := regexp.MatchString(`^http:\/\/|https:\/\/[a-zA-Z0-9]+`, url)
 	if httpLink {
-		lt.Data = node.Data
-		lt.Attr = attr.Key
-		lt.ValOriginal = url
-		lt.GetURL = url
+		if lt.Kind == "resource" {
+			lt.Data = node.Data
+			lt.Attr = attr.Key
+			lt.ValOriginal = url
+			lt.GetURL = url
 
-		dm.Links = append(dm.Links, lt)
-		return lt
+			dm.Links = append(dm.Links, lt)
+			return lt
+		} else if lt.Kind == "page" && strings.HasPrefix(url, dm.RootURL) {
+			// must have root url
+			lt.Data = node.Data
+			lt.Attr = attr.Key
+			lt.ValOriginal = url
+			lt.GetURL = url
+
+			dm.Links = append(dm.Links, lt)
+			return lt
+		}
 	}
 
 	if url == "/" {
@@ -195,14 +227,15 @@ func addLinkType(node *html.Node, attr html.Attribute, dm *downloadManagerType, 
 }
 
 func checkLinkTypes(node *html.Node, attr html.Attribute, dm *downloadManagerType) linkType {
+
 	var lt linkType
 	for i, _ := range dm.Links {
-		if dm.Links[i].Data == node.Data && dm.Links[i].Attr == attr.Key && dm.Links[i].ValOriginal == attr.Val {
-			return dm.Links[i]
-		}
-		// if dm.Links[i].ValOriginal == attr.Val {
+		// if dm.Links[i].Data == node.Data && dm.Links[i].Attr == attr.Key && dm.Links[i].ValOriginal == attr.Val {
 		// 	return dm.Links[i]
 		// }
+		if dm.Links[i].ValOriginal == attr.Val {
+			return dm.Links[i]
+		}
 	}
 	return lt
 }

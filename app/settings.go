@@ -48,8 +48,9 @@ func UpdateContentDir(ctx context.Context) {
 
 	log.Printf("message from UpdateContentDir(): dir provided '%v'", dir)
 	if dir != "" {
-		if filepath.Base(dir) != db.Settings.ApplicationName {
-			dir = filepath.Join(dir, db.Settings.ApplicationName)
+		if filepath.Base(dir) != Config.AppName {
+			dir = filepath.Join(dir, Config.AppName)
+			log.Printf("message from UpdateContentDir(): dir updated to '%v'", dir)
 		}
 		fileInfo, err := os.Lstat(db.Settings.ContentDir)
 		if err != nil {

@@ -21,5 +21,4 @@ type SettingsType struct {
 	ContentDir       string `json:"content_dir"`
 	ContentDirExists bool   `json:"content_dir_exists"`
 	ContentDirWSPort int16  `json:"content_dir_wsport"`
-	ApplicationName  string `json:"application_name"`
 }
