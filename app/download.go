@@ -6,7 +6,6 @@ import (
 	"gwd/app/download"
 	m "gwd/models"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -93,39 +92,7 @@ func DownloadSite(r m.ResponseType) error {
 	}
 	currentTime := time.Now()
 	t := currentTime.Format("20060102_150405")
-	log.Println(s, t, r.FaviconURL)
-
-	download.DownloadManager(r.Url, filepath.Join(db1.Settings.ContentDir, s, t), filepath.Join("/", s, t))
-
-	// // Send an HTTP GET request to the specified URL
-	// resp, err := http.Get(r.Url)
-	// if err != nil {
-	// 	return err
-	// }
-	// defer resp.Body.Close()
-
-	// // Read the response body
-	// body, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// // Create a new file, or overwrite if it already exists
-	// err = os.MkdirAll(filepath.Join(db1.Settings.ContentDir, s, t), 0777)
-	// if err != nil {
-	// 	return err
-	// }
-	// file, err := os.Create(filepath.Join(db1.Settings.ContentDir, s, t, "index.html"))
-	// if err != nil {
-	// 	return err
-	// }
-	// defer file.Close()
-
-	// // Write the body to the file
-	// _, err = file.Write(body)
-	// if err != nil {
-	// 	return err
-	// }
+	// log.Println(s, t, r.FaviconURL)
 
 	//----------------------------------------------------------------------------------------
 	// get favicon
@@ -162,6 +129,41 @@ func DownloadSite(r m.ResponseType) error {
 			return err
 		}
 	}
+
+	//----------------------------------------------------------------------------------------
+	// download
+	//----------------------------------------------------------------------------------------
+	download.DownloadManager(r.Url, filepath.Join(db1.Settings.ContentDir, s, t), filepath.Join("/", s, t))
+
+	// // Send an HTTP GET request to the specified URL
+	// resp, err := http.Get(r.Url)
+	// if err != nil {
+	// 	return err
+	// }
+	// defer resp.Body.Close()
+
+	// // Read the response body
+	// body, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// // Create a new file, or overwrite if it already exists
+	// err = os.MkdirAll(filepath.Join(db1.Settings.ContentDir, s, t), 0777)
+	// if err != nil {
+	// 	return err
+	// }
+	// file, err := os.Create(filepath.Join(db1.Settings.ContentDir, s, t, "index.html"))
+	// if err != nil {
+	// 	return err
+	// }
+	// defer file.Close()
+
+	// // Write the body to the file
+	// _, err = file.Write(body)
+	// if err != nil {
+	// 	return err
+	// }
 
 	//----------------------------------------------------------------------------------------
 	// update db

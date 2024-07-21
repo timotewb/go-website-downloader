@@ -2,8 +2,10 @@ package download
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"golang.org/x/net/html"
@@ -56,10 +58,10 @@ func downloadURL(lt linkType, dm *downloadManagerType) {
 		log.Printf("err from http.Get(): %v", err)
 	}
 	defer resp.Body.Close()
-	doc, _ := html.Parse(resp.Body)
 
 	// if kind is page, search for links
-	if lt.Kind == "page" {
+	if lt.Kind == "page" && resp.StatusCode != http.StatusOK {
+		doc, _ := html.Parse(resp.Body)
 		// define crawler and crawl
 		var crawler func(*html.Node)
 		crawler = func(node *html.Node) {
@@ -71,8 +73,28 @@ func downloadURL(lt linkType, dm *downloadManagerType) {
 			}
 		}
 		crawler(doc)
+		writeOutPage(doc, lt, dm)
+	} else if lt.Kind == "resource" {
+		// create dirs
+		dirName := filepath.Dir(lt.SaveDir)
+		err := os.MkdirAll(dirName, 0755)
+		if err != nil {
+			log.Printf("Error creating directory: %v\n", err)
+		}
+		// Create a file where the downloaded content will be saved
+		out, err := os.Create(lt.SaveDir)
+		if err != nil {
+			log.Printf("Error creating file: %v\n", err)
+		}
+		defer out.Close()
+
+		// Copy the response body to the file
+		_, err = io.Copy(out, resp.Body)
+		if err != nil {
+			log.Printf("Error writing file: %v\n", err)
+		}
+		updateDMLT(lt, dm)
 	}
-	writeOutPage(doc, lt, dm)
 
 	// depth +1 - this could cause some funky things with dm being pased around and updated in nested calls
 	for _, l := range dm.Links {

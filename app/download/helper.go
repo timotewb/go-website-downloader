@@ -122,8 +122,13 @@ func addLinkType(node *html.Node, attr html.Attribute, dm *downloadManagerType, 
 	lt.WrittenOut = false
 	lt.Kind = kind
 	fn := generateRandomString(10, dm)
-	lt.SaveDir = filepath.Join(dm.RootDir, kind, fn+".html")
-	lt.ValNew = filepath.Join(dm.RootWSDir, kind, fn+".html")
+	if kind == "page" {
+		lt.SaveDir = filepath.Join(dm.RootDir, kind, fn+".html")
+		lt.ValNew = filepath.Join(dm.RootWSDir, kind, fn+".html")
+	} else if kind == "resource" {
+		lt.SaveDir = filepath.Join(dm.RootDir, kind, fn+".res")
+		lt.ValNew = filepath.Join(dm.RootWSDir, kind, fn+".res")
+	}
 
 	url := attr.Val
 
